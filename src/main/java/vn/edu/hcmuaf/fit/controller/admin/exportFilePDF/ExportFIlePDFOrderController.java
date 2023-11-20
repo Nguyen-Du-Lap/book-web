@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import com.itextpdf.html2pdf.HtmlConverter;
 import vn.edu.hcmuaf.fit.dao.impl.BillDAO;
 import vn.edu.hcmuaf.fit.dao.impl.CartDao;
 import vn.edu.hcmuaf.fit.dao.impl.CustomerDAO;
@@ -38,7 +39,7 @@ public class ExportFIlePDFOrderController extends HttpServlet {
 
         // Tạo một đối tượng Document từ mã HTML
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//        HtmlConverter.convertToPdf(toStringHtml(customerModel, bill, listBill), outputStream);
+        HtmlConverter.convertToPdf(toStringHtml(customerModel, bill, listBill), outputStream);
 
         // Ghi dữ liệu PDF đã tạo vào phản hồi
         response.setContentLength(outputStream.size());
