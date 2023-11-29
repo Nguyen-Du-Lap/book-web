@@ -57,12 +57,12 @@
     <a href="/forgotPassword" class="forgotPassword-link">Quên mật khẩu?</a>
     <input type="hidden" name="action" value="login" >
     <button type="submit" class="btn-login">Đăng nhập</button>
-    <fb:login-button class="social-button" id="facebook-login"  scope="public_profile,email" onlogin="checkLoginState();">
-      <div>
-        <span>Đăng nhập bằng Facebook</span>
-        <i class="fa-brands fa-facebook-f" style="margin-left: 5px;"></i>
-      </div>
-    </fb:login-button>
+<%--    <fb:login-button class="social-button" id="facebook-login"  scope="public_profile,email" onlogin="checkLoginState();">--%>
+<%--      <div>--%>
+<%--        <span>Đăng nhập bằng Facebook</span>--%>
+<%--        <i class="fa-brands fa-facebook-f" style="margin-left: 5px;"></i>--%>
+<%--      </div>--%>
+<%--    </fb:login-button>--%>
 
     <a href="https://accounts.google.com/o/oauth2/auth?scope=email%20profile%20openid &redirect_uri=http://localhost:8080/Website_book_war/login-google&response_type=code
     &client_id=550486427451-rkh0g0s9bg6cr6c5l8hr3g73h0eer9so.apps.googleusercontent.com&approval_prompt=force" class="social-button" id="google-login">
