@@ -3,10 +3,7 @@ package vn.edu.hcmuaf.fit.dao.impl;
 import vn.edu.hcmuaf.fit.db.JDBCConnector;
 import vn.edu.hcmuaf.fit.model.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,22 +37,33 @@ public class CartDao {
         }
         return 1;
     }
-    public void insertCart(int idUser, String timeShip, double feeShip, double totalPrice, String infoShip) {
+    public int insertCart(int idUser, String timeShip, double feeShip, double totalPrice, String infoShip) {
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
+        ResultSet generatedKeys = null;
+        int cartId = -1; // Giá trị mặc định
 
         if (connection != null) {
             try {
-                String sql = "INSERT INTO carts( id_user, timeShip, fee_ship, total_price, info_ship, create_time) VALUES ( ?, ?, ?, ?, ?,null)";
-                statement = connection.prepareStatement(sql);
+                String sql = "INSERT INTO carts( idUser, timeShip, feeShip, totalPrice, infoShip) VALUES ( ?, ?, ?, ?, ?)";
+                statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, idUser);
                 statement.setString(2, timeShip);
                 statement.setDouble(3, feeShip);
                 statement.setDouble(4, totalPrice);
                 statement.setString(5, infoShip);
-
                 statement.executeUpdate();
-                System.out.println("CartModel inserted successfully.");
+                // Thực hiện câu lệnh INSERT và nhận giá trị được tạo tự động
+
+                generatedKeys = statement.getGeneratedKeys();
+
+                if (generatedKeys.next()) {
+                    cartId = generatedKeys.getInt(1); // Lấy giá trị ID đã được tạo tự động
+                    System.out.println("CartModel inserted successfully. Cart ID: " + cartId);
+                } else {
+                    System.err.println("Failed to retrieve auto-generated cart ID.");
+                }
+                return cartId;
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -67,6 +75,7 @@ public class CartDao {
                 }
             }
         }
+        return cartId;
     }
     public OrderReviewDetail getAllByIdUserAndIdCart(int id, int idCart) {
         OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
