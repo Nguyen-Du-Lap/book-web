@@ -25,7 +25,7 @@ public class InformationDeliverDao {
                 while (resultSet.next()) {
 
                     informationDeliverModel.setId(resultSet.getInt(1));
-                    informationDeliverModel.setIdOrder(resultSet.getInt(2));
+                    informationDeliverModel.setIdCart(resultSet.getInt(2));
                     informationDeliverModel.setX(resultSet.getInt(3));
                     informationDeliverModel.setY(resultSet.getInt(4));
                     informationDeliverModel.setZ(resultSet.getInt(5));
@@ -58,7 +58,7 @@ public class InformationDeliverDao {
             try {
                 String sql = "INSERT INTO infomationdelivers(idCart, x,y,z,w, districtTo,warTo) VALUES (?, ?, ?, ?, ?,?,?)";
                 statement = connection.prepareStatement(sql);
-                statement.setInt(1, a.getIdOrder());
+                statement.setInt(1, a.getIdCart());
                 statement.setInt(2, a.getX());
                 statement.setInt(3, a.getY());
                 statement.setInt(4, a.getZ());

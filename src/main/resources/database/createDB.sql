@@ -90,6 +90,7 @@ CREATE TABLE IF NOT EXISTS `bill` (
   `id_order` int(11) NOT NULL AUTO_INCREMENT,
   `id_user` int(11) NOT NULL,
   `id_book` int(11) NOT NULL,
+  `idCart` int(11) DEFAULT NULL,
   `shipping_info` int(11) NOT NULL DEFAULT 1 COMMENT '1: chờ xử lý; 2: đang vận chuyển; 3: đã hoàn thành; 4: đã hủy',
   `id_discount` int(11) DEFAULT NULL,
   `address` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -102,42 +103,19 @@ CREATE TABLE IF NOT EXISTS `bill` (
   `create_order_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Thời gian tạo bill',
   `ship_time` timestamp NULL DEFAULT NULL COMMENT 'Thời gian ship',
   `receive_time` timestamp NULL DEFAULT NULL COMMENT 'Thời gian nhận',
-  `idCart` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_order`) USING BTREE,
-  KEY `id_user` (`id_user`) USING BTREE,
-  KEY `id_discount` (`id_discount`) USING BTREE,
-  KEY `id_book` (`id_book`),
-  CONSTRAINT `bill_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `customer` (`id_user`),
-  CONSTRAINT `bill_ibfk_2` FOREIGN KEY (`id_discount`) REFERENCES `discount` (`id_discount`),
-  CONSTRAINT `bill_ibfk_3` FOREIGN KEY (`id_book`) REFERENCES `book` (`id_book`),
-  CONSTRAINT `bill_ibfk_4` FOREIGN KEY (`id_book`) REFERENCES `book` (`id_book`),
-  CONSTRAINT `bill_ibfk_5` FOREIGN KEY (`id_book`) REFERENCES `book` (`id_book`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+  KEY `bil_ibfk_1` (`id_user`),
+  KEY `bil_ibfk_2` (`id_book`),
+  KEY `bil_ibfk_3` (`idCart`),
+  CONSTRAINT `bil_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `customer` (`id_user`),
+  CONSTRAINT `bil_ibfk_2` FOREIGN KEY (`id_book`) REFERENCES `book` (`id_book`),
+  CONSTRAINT `bil_ibfk_3` FOREIGN KEY (`idCart`) REFERENCES `carts` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- Dumping data for table web_ban_sach.bill: ~22 rows (approximately)
-INSERT INTO `bill` (`id_order`, `id_user`, `id_book`, `shipping_info`, `id_discount`, `address`, `pack`, `payment_method`, `totalBill`, `quantity`, `phone`, `info`, `create_order_time`, `ship_time`, `receive_time`, `idCart`) VALUES
-	(80, 38, 18, 2, NULL, 'Phường Mai Dịch - Quận Cầ Giấy - Hà Nội, Phường Bình Ngọc, Thành phố Móng Cái, Tỉnh Quảng Ninh', 0, 0, 316776, 1, NULL, 'Đặt hàng sau 5h', '2023-06-13 09:02:51', '2023-05-20 08:26:35', '2023-05-20 08:26:38', 1),
-	(81, 38, 19, 2, NULL, 'Phường Mai Dịch - Quận Cầ Giấy - Hà Nội, Phường Bình Ngọc, Thành phố Móng Cái, Tỉnh Quảng Ninh', 0, 0, 316776, 2, NULL, 'Đặt hàng sau 5h', '2023-06-13 09:02:51', '2023-05-20 08:26:36', '2023-05-20 08:26:40', 1),
-	(82, 39, 6, 1, NULL, 'Ho chi Minh City, Xã Văn Quán, Huyện Lập Thạch, Tỉnh Vĩnh Phúc', 0, 0, 124200, 1, '0342764095', '', '2023-06-01 09:13:49', NULL, NULL, 2),
-	(83, 39, 18, 1, NULL, 'Ho chi Minh City, Xã Yên Lương, Huyện Thanh Sơn, Tỉnh Phú Thọ', 0, 0, 149000, 1, '0982698455', '', '2023-06-01 04:16:54', NULL, NULL, 2),
-	(84, 39, 18, 1, NULL, 'Ho chi Minh City, Xã Tuấn Đạo, Huyện Sơn Động, Tỉnh Bắc Giang', 0, 0, 149000, 1, '0982698455', '', '2023-06-01 09:13:48', NULL, NULL, 3),
-	(85, 39, 18, 1, NULL, 'Ho chi Minh City, Xã Yên Thái, Huyện Văn Yên, Tỉnh Yên Bái', 0, 0, 149000, 1, '0342764095', '', '2023-06-01 08:14:20', NULL, NULL, 4),
-	(86, 39, 18, 1, NULL, 'Ho chi Minh City, Xã Yên Giả, Huyện Quế Võ, Tỉnh Bắc Ninh', 0, 0, 237888, 1, '0982698455', '', '2023-06-01 08:15:59', NULL, NULL, 5),
-	(87, 39, 19, 1, NULL, 'Ho chi Minh City, Xã Yên Giả, Huyện Quế Võ, Tỉnh Bắc Ninh', 0, 0, 237888, 1, '0982698455', '', '2023-06-01 08:15:59', NULL, NULL, 5),
-	(88, 39, 18, 1, NULL, 'Ho chi Minh City, Xã Nghĩa Phương, Huyện Lục Nam, Tỉnh Bắc Giang', 0, 0, 149000, 1, '0982698455', '', '2023-06-01 09:13:48', NULL, NULL, 6),
-	(89, 39, 18, 1, NULL, 'Ho chi Minh City, Xã Tam Hợp, Huyện Bình Xuyên, Tỉnh Vĩnh Phúc', 0, 0, 149000, 1, '0342764095', '', '2023-06-01 09:18:26', NULL, NULL, 7),
-	(90, 38, 3, 1, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Phường Phúc Xá, Quận Ba Đình, Thành phố Hà Nội', 0, 0, 101000, 1, NULL, 'Giao hàng buổi sáng', '2023-06-02 10:20:25', NULL, NULL, 8),
-	(91, 18, 3, 4, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Phường Tam Bình, Quận Thủ Đức, Thành phố Hồ Chí Minh', 0, 0, 72000, 1, NULL, 'Giao hàng đúng giờ', '2023-06-13 08:09:48', NULL, NULL, 9),
-	(92, 18, 3, 1, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Lang Quán, Huyện Yên Sơn, Tỉnh Tuyên Quang', 0, 0, 101000, 1, '0867415853', '', '2023-06-02 13:31:49', NULL, NULL, 10),
-	(93, 18, 3, 2, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Phường Tân Phong, Thành phố Lai Châu, Tỉnh Lai Châu', 0, 0, 101000, 1, '0867415853', '', '2023-06-02 14:00:09', NULL, NULL, 11),
-	(94, 18, 18, 3, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Tư Mại, Huyện Yên Dũng, Tỉnh Bắc Giang', 0, 0, 182600, 1, '0867415853', 'Giao hàng nhanh', '2023-06-13 08:26:35', NULL, NULL, 12),
-	(95, 18, 14, 3, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Tư Mại, Huyện Yên Dũng, Tỉnh Bắc Giang', 0, 0, 182600, 1, '0867415853', 'Giao hàng nhanh', '2023-06-13 08:27:09', NULL, NULL, 12),
-	(96, 18, 18, 1, NULL, 'Q9, Xã Phú Lạc, Huyện Cẩm Khê, Tỉnh Phú Thọ', 0, 0, 301000, 2, '0867415853', 'Giao hàng sau 5h', '2023-06-13 08:09:26', NULL, NULL, 13),
-	(97, 18, 3, 1, NULL, 'Q9, Xã Phú Lạc, Huyện Cẩm Khê, Tỉnh Phú Thọ', 0, 0, 301000, 1, '0867415853', 'Giao hàng sau 5h', '2023-06-13 08:09:26', NULL, NULL, 13),
-	(98, 18, 3, 2, NULL, 'Q9, Xã Khả Cửu, Huyện Thanh Sơn, Tỉnh Phú Thọ', 0, 0, 81000, 1, '0867415853', '', '2023-06-14 06:07:29', NULL, NULL, 14),
-	(99, 18, 19, 1, NULL, '123, Xã Đức Hạnh, Huyện Bảo Lâm, Tỉnh Cao Bằng', 0, 0, 88999, 1, '0867415853', '', '2023-06-16 11:48:35', NULL, NULL, 15),
-	(100, 38, 1, 1, NULL, 'Đường số 2, Xã Bộc Bố, Huyện Pác Nặm, Tỉnh Bắc Kạn', 0, 0, 140000, 1, '0867415853', '', '2023-08-31 02:20:20', NULL, NULL, 16),
-	(101, 18, 1, 1, NULL, 'Phước Long 1, Xã Tả Gia Khâu, Huyện Mường Khương, Tỉnh Lào Cai', 0, 0, 260000, 2, '0867415853', '', '2023-08-31 03:01:10', NULL, NULL, 17);
+-- Dumping data for table web_ban_sach.bill: ~2 rows (approximately)
+INSERT INTO `bill` (`id_order`, `id_user`, `id_book`, `idCart`, `shipping_info`, `id_discount`, `address`, `pack`, `payment_method`, `totalBill`, `quantity`, `phone`, `info`, `create_order_time`, `ship_time`, `receive_time`) VALUES
+	(105, 38, 19, 28, 1, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Sơn Tình, Huyện Cẩm Khê, Tỉnh Phú Thọ', 0, 0, 167199, 1, '0867415853', '', '2023-11-29 11:58:07', NULL, NULL),
+	(106, 38, 14, 28, 1, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Sơn Tình, Huyện Cẩm Khê, Tỉnh Phú Thọ', 0, 0, 167199, 2, '0867415853', '', '2023-11-29 11:58:07', NULL, NULL);
 
 -- Dumping structure for table web_ban_sach.book
 CREATE TABLE IF NOT EXISTS `book` (
@@ -168,12 +146,12 @@ CREATE TABLE IF NOT EXISTS `book` (
 
 -- Dumping data for table web_ban_sach.book: ~55 rows (approximately)
 INSERT INTO `book` (`id_book`, `name`, `id_author`, `id_catalog`, `quantity`, `prime_cost`, `price`, `discount_price`, `isNew`, `isActive`, `id_pc`, `id_p`, `published_time`, `created`) VALUES
-	(1, 'Ánh Mắt Xa, Cuộc Đời Gần', 44, 7, 592, 120000, 150000, 0, 1, 1, 9, 5, 2022, '2023-08-31 03:00:30'),
+	(1, 'Ánh Mắt Xa, Cuộc Đời Gần', 44, 7, 591, 120000, 150000, 0, 1, 1, 9, 5, 2022, '2023-11-29 06:19:26'),
 	(2, 'Dạy Con Làm Giàu - Tập 1 (Tái Bản 2018)', 44, 5, 463, 30000, 65000, 0.41, 0, 1, 12, 12, 2018, '2023-02-25 09:15:10'),
 	(3, 'Công Dân Toàn Cầu - Công Dân Vũ Trụ', 15, 5, 91, 60000, 90000, 0.2, 1, 1, 12, 12, 2022, '2023-06-13 08:31:38'),
 	(4, 'Muôn Kiếp Nhân Sinh - Many Times, Many Lives', 41, 2, 87, 100000, 168000, 0.39, 0, 1, 10, 10, 2020, '2023-01-06 14:35:48'),
 	(5, 'Hành Trình Về Phương Đông (Tái Bản 2021)', 43, 2, 395, 70000, 118000, 0.35, 0, 1, 10, 15, 2021, '2023-03-01 02:31:48'),
-	(6, 'All In Love - Ngập Tràn Yêu Thương (Tái Bản 2020)', 7, 8, 299, 75000, 119000, 0.2, 0, 1, 5, 7, 2020, '2023-06-15 03:45:12'),
+	(6, 'All In Love - Ngập Tràn Yêu Thương (Tái Bản 2020)', 7, 8, 297, 75000, 119000, 0.2, 0, 1, 5, 7, 2020, '2023-11-29 06:37:52'),
 	(7, 'Giết Con Chim Nhại (Tái Bản 2019)', 29, 8, 74, 75000, 120000, 0.2, 0, 1, 8, 14, 2019, '2023-03-01 02:24:10'),
 	(8, 'Nhà Giả Kim (Tái Bản 2020)', 19, 8, 248, 50000, 79000, 0.32, 0, 1, 8, 6, 2020, '2023-02-24 15:03:57'),
 	(9, '1 Cm Giữa Anh Và Em', 19, 8, 62, 120000, 160000, 0.1, 0, 1, 8, 3, 2020, '2023-02-25 08:03:40'),
@@ -181,12 +159,12 @@ INSERT INTO `book` (`id_book`, `name`, `id_author`, `id_catalog`, `quantity`, `p
 	(11, 'Đầu Tư Chứng Khoán Theo Chỉ Số', 34, 4, 300, 70000, 110000, 0.2, 0, 1, 12, 1, 2019, '2023-01-06 14:36:23'),
 	(12, 'Tĩnh Lặng - Sức Mạnh Tĩnh Lặng Trong Thế Giới Huyền Ảo (Tái Bản 2020)', 37, 2, 86, 50000, 69000, 0.2, 0, 1, 12, 15, 2020, '2023-06-01 04:13:46'),
 	(13, 'Những Người Khốn Khổ (Trọn Bộ 2 Tập)', 32, 8, 111, 350000, 499000, 0.2, 0, 1, 8, 14, 2020, '2023-02-25 08:14:59'),
-	(14, 'Robinson Crusoe (Tái Bản)', 12, 8, 197, 90000, 112000, 0.7, 1, 1, 13, 14, 2022, '2023-06-02 14:14:06'),
+	(14, 'Robinson Crusoe (Tái Bản)', 12, 8, 194, 90000, 112000, 0.7, 1, 1, 13, 14, 2022, '2023-11-29 11:57:35'),
 	(15, '100 sai lầm của bố mẹ khiến con thất bại', 38, 8, 70, 90000, 135000, 0.2, 0, 1, 15, 7, 2020, '2023-01-06 14:36:36'),
 	(16, 'Bieguni, Những Người Không Ngừng Chuyển Động', 2, 8, 221, 120000, 185000, 0.2, 0, 1, 15, 7, 2020, '2023-02-25 09:09:44'),
 	(17, 'Bộ Ba Bất Hảo - Quẩy Lên Nào! - Tình Bạn Là Vô Giá', 30, 8, 35, 80000, 118000, 0.2, 0, 1, 15, 7, 2021, '2023-02-28 12:09:16'),
-	(18, 'Hãy nhắm mắt khi anh đến', 1, 1, 46, 120000, 150000, 0, 1, 1, 1, 1, 2022, '2023-06-14 13:37:58'),
-	(19, 'Ngày Cuối Cùng Của Một Tử Tù', 1, 1, 12307, 88888, 99999, 0, 1, 1, 1, 1, 2022, '2023-06-16 11:42:10'),
+	(18, 'Hãy nhắm mắt khi anh đến', 1, 1, 44, 120000, 150000, 0, 1, 1, 1, 1, 2022, '2023-11-29 06:55:14'),
+	(19, 'Ngày Cuối Cùng Của Một Tử Tù', 1, 1, 12305, 88888, 99999, 0, 1, 1, 1, 1, 2022, '2023-11-29 11:57:43'),
 	(22, 'Tinh Hoa Văn Học Việt Nam - Truyện Ngắn Nguyễn Công HoanTinh Hoa Văn Học Việt Nam - Truyện Ngắn Nguyễn Công Hoan\r\n', 21, 9, 0, 83000, 88000, 0.06, 1, 1, 13, 14, 2016, '2023-03-22 13:02:49'),
 	(23, 'Danh Tác Văn Học Việt Nam - Sợi Tóc\r\n', 39, 9, 0, 30000, 35000, 0.13, 1, 1, 16, 14, 2022, '2023-03-22 13:02:49'),
 	(24, 'Danh Tác Việt Nam - Thạch Lam Tuyển Tập (Tái Bản 2019)\r\n', 39, 9, 0, 100000, 113000, 0.05, 1, 1, 13, 14, 2019, '2023-03-22 13:02:50'),
@@ -304,28 +282,15 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `totalPrice` int(11) unsigned DEFAULT 0,
   `infoShip` int(11) DEFAULT 0,
   `create_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
+  `verify` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `carts_ibfk_1` (`idUser`),
+  CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `customer` (`id_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table web_ban_sach.carts: ~17 rows (approximately)
-INSERT INTO `carts` (`id`, `idUser`, `timeShip`, `feeShip`, `totalPrice`, `infoShip`, `create_time`) VALUES
-	(1, 38, '06/05/2023 - 09/05/2023', 29000, 316776, 1, '2023-06-01 04:14:43'),
-	(2, 39, '2023/06/05 - 2023/06/08', 29000, 101000, 1, '2023-06-01 04:18:24'),
-	(3, 39, '2023/06/06 - 2023/06/09', 29000, 149000, 1, '2023-06-01 08:12:53'),
-	(4, 39, '2023/06/06 - 2023/06/09', 29000, 149000, 1, '2023-06-01 08:14:20'),
-	(5, 39, '2023/06/05 - 2023/06/08', 29000, 237888, 1, '2023-06-01 08:15:59'),
-	(6, 39, '2023/06/05 - 2023/06/08', 29000, 149000, 1, '2023-06-01 08:24:24'),
-	(7, 39, '2023/06/05 - 2023/06/08', 29000, 149000, 1, '2023-06-01 08:25:29'),
-	(8, 38, NULL, 29000, 101000, 1, '2023-06-02 10:20:25'),
-	(9, 18, '2023/06/04 - 2023/06/07', 0, 72000, 1, '2023-06-02 13:22:27'),
-	(10, 18, '2023/06/06 - 2023/06/09', 29000, 101000, 3, '2023-06-14 13:56:10'),
-	(11, 18, '2023/06/06 - 2023/06/09', 29000, 101000, 3, '2023-06-14 13:56:17'),
-	(12, 18, '2023/06/06 - 2023/06/09', 29000, 182600, 2, '2023-06-14 13:56:46'),
-	(13, 18, '2023/06/18 - 2023/06/21', 29000, 301000, 1, '2023-06-13 08:09:26'),
-	(14, 18, '2023/06/18 - 2023/06/21', 29000, 81000, 1, '2023-06-13 08:34:13'),
-	(15, 18, '2023/06/21 - 2023/06/24', 29000, 88999, 1, '2023-06-16 11:48:35'),
-	(16, 38, '2023/09/05 - 2023/09/08', 0, 140000, 1, '2023-08-31 02:20:20'),
-	(17, 18, '2023/09/05 - 2023/09/08', 0, 260000, 1, '2023-08-31 03:01:10');
+-- Dumping data for table web_ban_sach.carts: ~0 rows (approximately)
+INSERT INTO `carts` (`id`, `idUser`, `timeShip`, `feeShip`, `totalPrice`, `infoShip`, `create_time`, `verify`) VALUES
+	(28, 38, '2023/12/04 - 2023/12/07', 0, 167199, 1, '2023-11-29 11:58:07', NULL);
 
 -- Dumping structure for table web_ban_sach.catalog
 CREATE TABLE IF NOT EXISTS `catalog` (
@@ -384,29 +349,28 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `lock_time` int(11) DEFAULT -1,
   `typeLogin` int(11) DEFAULT 1,
   PRIMARY KEY (`id_user`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- Dumping data for table web_ban_sach.customer: ~22 rows (approximately)
 INSERT INTO `customer` (`id_user`, `first_name`, `last_name`, `email`, `password`, `address`, `phone`, `created_time`, `role`, `status`, `attempts`, `lock_time`, `typeLogin`) VALUES
 	(1, 'Nguyễn', 'Uyên Thư', 'admin@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Tịnh Sơn - Sơn Tịnh - Quảng Ngãi', '0932766789', '2023-06-14 14:58:43', 'admin', 1, 3, -1, 1),
-	(2, 'Hoàng', 'Minh An', 'minan@gmail.com', '99999999', 'Hòa Ninh - Hoà Vang - Đà Nẵng', '0927378788', '2023-06-12 14:00:40', 'mod', 1, 1, -1, 1),
-	(3, 'Lâm', 'Tố Mỹ', 'tomy@gmail.com', '12345678', 'Phường Yên Hòa - Quận Cầu Giấy - Hà Nội', '0127856567', '2023-02-18 03:12:19', 'mod', 1, 3, -1, 1),
-	(4, 'Đoàn', 'Phong', 'phong@gmail.com', '12345678', 'Phường Mai Dịch - Quận Cầu Giấy - Hà Nội', '0234678179', '2023-01-09 07:03:25', 'user', 1, 3, -1, 1),
-	(5, 'Hà', 'Minh Minh', 'minh@gmail.com', '12345678', 'Phường Nghĩa Tân - Cầu Giấy - Hà Nội', '0909887766', '2023-02-18 03:12:21', 'user', 1, 3, -1, 1),
-	(6, 'Vương', 'Tuấn Khải', 'karrywang@gmail.com', '12345678', 'Phường Linh Xuân - TP Thủ Đức - TPHCM', '0329476587', '2023-01-06 12:33:59', 'user', 1, 3, -1, 1),
-	(7, 'Nguyễn ', 'Minh Thư', 'minhthu@gmail.com', '12345678', 'Đông Hòa - Dĩ An - Bình Dương', '0868652232', '2023-02-18 03:12:23', 'user', 1, 3, -1, 1),
-	(8, 'Lương', 'Thùy Linh', 'thuylinh@gmail.com', '12312312', 'Huyện Cần Giờ - TP Hồ Chí Minh', '0326524478', '2023-01-06 12:23:15', 'user', 1, 3, -1, 1),
-	(9, 'Nguyễn', 'Thùy Tiên', 'thuytien@gmail.com', '00326598', 'Gò Vấp - TP Hồ Chí Minh', '0352232365', '2023-02-18 03:12:25', 'user', 1, 3, -1, 1),
-	(10, 'Trần', 'Thanh Phong', 'thanhphong@gmail.com', 'thanh1234', 'Gò Vấp - TP Hồ Chí Minh', '0969236214', '2023-02-28 12:14:29', 'user', 1, 2, -1, 1),
-	(11, 'Trần', 'Quang Vũ', 'quangvu@gmail.com', '12345678', 'Đông Hòa - Dĩ An - Bình Dương', '0966323665', '2023-01-06 12:27:54', 'user', 1, 3, -1, 1),
-	(12, 'Hoàng', 'Mỹ Duyên', 'myduyen@gmail.com', '12345678', 'Quận 5 - TP Hồ Chí Minh', '0329810548', '2023-02-28 13:01:27', 'user', 1, 3, -1, 1),
-	(13, 'Đặng', 'Mỹ Ngọc', 'myngoc@gmail.com', 'ngoc1234', 'Quận 6 - TP Hồ Chí Minh', '0963124562', '2023-02-28 12:11:46', 'user', 1, 2, -1, 1),
-	(14, 'Đỗ ', 'Hoàng Phú', 'hoangphu@gmail.com', 'phu12345', 'Quận Bình Thạnh - TP Hồ Chí Minh', '0866025036', '2023-01-06 12:32:57', 'user', 1, 3, -1, 1),
-	(15, 'Hương', 'Mỹ', 'nguyenthiquynhhuong2002@gmail.com', '12345678', NULL, '0867415853', '2023-02-28 13:07:07', 'user', 1, 3, -1, 1),
-	(16, 'Nguyễn', 'Thư', 'minhthu08111208@gmail.com', '12345678', '', '0365200110', '2023-02-18 03:15:50', 'user', 1, 3, -1, 1),
-	(18, 'Nguyen', 'Du', '20130302@st.hcmuaf.edu.vn', 'bdc4e8c59ed0bb1a0ca5f46667c5115a49', '', '0867415853', '2023-06-13 08:24:56', 'user', 1, 3, -1, 1),
-	(28, 'A', 'B', 'sosinhsv1a@gmail.com', '12345678', '', '0987', '2023-06-14 06:24:12', 'mod', 1, 1, -1, 1),
-	(38, 'Nguyễn Dư', 'Lập', 'ndl22012002@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Phường Mai Dịch - Quận Cầ Giấy - Hà Nội', '0867415853', '2023-06-13 08:43:21', 'mod', 1, 3, -1, 1),
+	(2, 'Hoàng', 'Minh An', 'minan@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Hòa Ninh - Hoà Vang - Đà Nẵng', '0927378788', '2023-11-28 00:53:40', 'mod', 1, 1, -1, 1),
+	(3, 'Lâm', 'Tố Mỹ', 'tomy@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Phường Yên Hòa - Quận Cầu Giấy - Hà Nội', '0127856567', '2023-11-28 00:53:40', 'mod', 1, 3, -1, 1),
+	(4, 'Đoàn', 'Phong', 'phong@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Phường Mai Dịch - Quận Cầu Giấy - Hà Nội', '0234678179', '2023-11-28 00:53:39', 'user', 1, 3, -1, 1),
+	(5, 'Hà', 'Minh Minh', 'minh@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Phường Nghĩa Tân - Cầu Giấy - Hà Nội', '0909887766', '2023-11-28 00:53:38', 'user', 1, 3, -1, 1),
+	(6, 'Vương', 'Tuấn Khải', 'karrywang@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Phường Linh Xuân - TP Thủ Đức - TPHCM', '0329476587', '2023-11-28 00:53:37', 'user', 1, 3, -1, 1),
+	(7, 'Nguyễn ', 'Minh Thư', 'minhthu@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Đông Hòa - Dĩ An - Bình Dương', '0868652232', '2023-11-28 00:53:37', 'user', 1, 3, -1, 1),
+	(8, 'Lương', 'Thùy Linh', 'thuylinh@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Huyện Cần Giờ - TP Hồ Chí Minh', '0326524478', '2023-11-28 00:53:36', 'user', 1, 3, -1, 1),
+	(9, 'Nguyễn', 'Thùy Tiên', 'thuytien@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Gò Vấp - TP Hồ Chí Minh', '0352232365', '2023-11-28 00:53:35', 'user', 1, 3, -1, 1),
+	(10, 'Trần', 'Thanh Phong', 'thanhphong@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Gò Vấp - TP Hồ Chí Minh', '0969236214', '2023-11-28 00:53:35', 'user', 1, 2, -1, 1),
+	(11, 'Trần', 'Quang Vũ', 'quangvu@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Đông Hòa - Dĩ An - Bình Dương', '0966323665', '2023-11-28 00:53:34', 'user', 1, 3, -1, 1),
+	(12, 'Hoàng', 'Mỹ Duyên', 'myduyen@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Quận 5 - TP Hồ Chí Minh', '0329810548', '2023-11-28 00:53:33', 'user', 1, 3, -1, 1),
+	(13, 'Đặng', 'Mỹ Ngọc', 'myngoc@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Quận 6 - TP Hồ Chí Minh', '0963124562', '2023-11-28 00:53:33', 'user', 1, 2, -1, 1),
+	(14, 'Đỗ ', 'Hoàng Phú', 'hoangphu@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Quận Bình Thạnh - TP Hồ Chí Minh', '0866025036', '2023-11-28 00:53:32', 'user', 1, 3, -1, 1),
+	(15, 'Hương', 'Mỹ', 'nguyenthiquynhhuong2002@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', NULL, '0867415853', '2023-11-28 00:53:31', 'user', 1, 3, -1, 1),
+	(16, 'Nguyễn', 'Thư', 'minhthu08111208@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', '', '0365200110', '2023-11-28 00:53:31', 'user', 1, 3, -1, 1),
+	(28, 'A', 'B', 'sosinhsv1a@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', '', '0987', '2023-11-28 00:53:30', 'mod', 1, 1, -1, 1),
+	(38, 'Nguyễn Dư', 'Lập', 'ndl22012002@gmail.com', 'brd4e8c59ed0bb1a0ca5f46667c5115a49', 'Phường Mai Dịch - Quận Cầ Giấy - Hà Nội', '0867415853', '2023-11-29 06:55:06', 'user', 1, 3, -1, 1),
 	(39, 'A', 'Kim', 'sosinhsv1b@gmail.com', '', '', '', '2023-05-02 10:27:50', 'user', 1, 3, -1, 1),
 	(40, 'tiến', 'trần đình minh', '4tiensau@gmail.com', '', '', '', '2023-06-01 04:19:24', 'mod', 1, 3, -1, 1),
 	(43, 'A', 'A', '123@gmail.com', 'ewc65ded5885fe80672bd2979c9f14f182', 'A', '12345678', '2023-06-12 14:15:41', 'mod', 1, 3, -1, 1);
@@ -445,16 +409,7 @@ CREATE TABLE IF NOT EXISTS `discount_customer` (
   CONSTRAINT `voucher_fk2` FOREIGN KEY (`id_user`) REFERENCES `customer` (`id_user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
--- Dumping data for table web_ban_sach.discount_customer: ~7 rows (approximately)
-INSERT INTO `discount_customer` (`id_discount`, `id_user`, `quantity`) VALUES
-	(1, 18, 1),
-	(2, 18, 1),
-	(2, 38, 1),
-	(3, 18, 1),
-	(4, 18, 1),
-	(5, 18, 1),
-	(6, 18, 1),
-	(7, 18, 1);
+-- Dumping data for table web_ban_sach.discount_customer: ~0 rows (approximately)
 
 -- Dumping structure for table web_ban_sach.image_book
 CREATE TABLE IF NOT EXISTS `image_book` (
@@ -592,21 +547,14 @@ CREATE TABLE IF NOT EXISTS `infomationdelivers` (
   `districtTo` varchar(50) NOT NULL DEFAULT '0',
   `warTo` varchar(50) NOT NULL DEFAULT '0',
   `token` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (`id`),
+  KEY `infomationdelivers_ibfk_1` (`idCart`),
+  CONSTRAINT `infomationdelivers_ibfk_1` FOREIGN KEY (`idCart`) REFERENCES `carts` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table web_ban_sach.infomationdelivers: ~10 rows (approximately)
+-- Dumping data for table web_ban_sach.infomationdelivers: ~1 rows (approximately)
 INSERT INTO `infomationdelivers` (`id`, `idCart`, `x`, `y`, `z`, `w`, `districtTo`, `warTo`, `token`) VALUES
-	(1, 0, 20, 13, 1, 0, 'Huyện Văn Yên', 'Xã Yên Thái', NULL),
-	(2, 5, 20, 13, 2, 0, 'Huyện Quế Võ', 'Xã Yên Giả', NULL),
-	(3, 7, 20, 13, 1, 224, 'Huyện Bình Xuyên', 'Xã Tam Hợp', '70cd46c4630d4bdb9e03ee302e891c4e'),
-	(4, 11, 20, 13, 1, 224, 'Thành phố Lai Châu', 'Phường Tân Phong', 'b68c20fafe8a487787f7a7cabd836c1b'),
-	(5, 12, 20, 13, 2, 448, 'Huyện Yên Dũng', 'Xã Tư Mại', '5c91a92cea2f42cf904054592f5cda13'),
-	(6, 13, 20, 13, 2, 448, 'Huyện Cẩm Khê', 'Xã Phú Lạc', NULL),
-	(7, 14, 20, 13, 1, 224, 'Huyện Thanh Sơn', 'Xã Khả Cửu', NULL),
-	(8, 15, 20, 13, 1, 224, 'Huyện Bảo Lâm', 'Xã Đức Hạnh', NULL),
-	(9, 16, 20, 13, 1, 224, 'Huyện Pác Nặm', 'Xã Bộc Bố', NULL),
-	(10, 17, 20, 13, 1, 224, 'Huyện Mường Khương', 'Xã Tả Gia Khâu', NULL);
+	(19, 28, 20, 13, 2, 448, 'Huyện Cẩm Khê', 'Xã Sơn Tình', NULL);
 
 -- Dumping structure for table web_ban_sach.logs
 CREATE TABLE IF NOT EXISTS `logs` (
@@ -619,9 +567,9 @@ CREATE TABLE IF NOT EXISTS `logs` (
   `createAt` datetime NOT NULL DEFAULT current_timestamp(),
   `status` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table web_ban_sach.logs: ~95 rows (approximately)
+-- Dumping data for table web_ban_sach.logs: ~121 rows (approximately)
 INSERT INTO `logs` (`id`, `level`, `user`, `ip`, `src`, `content`, `createAt`, `status`) VALUES
 	(1, 0, 0, '192.168.186.1', 'Register', 'User register suscess', '2023-04-19 16:10:38', 1),
 	(2, 0, 38, '192.168.186.1', 'Login', 'Login fall', '2023-04-19 16:10:51', 1),
@@ -717,7 +665,33 @@ INSERT INTO `logs` (`id`, `level`, `user`, `ip`, `src`, `content`, `createAt`, `
 	(92, 0, 38, '192.168.186.1', 'Quản lí contact', 'Nhân viên phản hồi khách hàng', '2023-06-16 18:37:01', 1),
 	(93, 0, 18, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 19', '2023-06-16 18:48:35', 1),
 	(94, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 1', '2023-08-31 09:20:20', 1),
-	(95, 0, 18, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 1', '2023-08-31 10:01:10', 1);
+	(95, 0, 18, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 1', '2023-08-31 10:01:10', 1),
+	(96, 0, 44, '192.168.186.1', 'Register', 'User register suscess', '2023-11-21 21:52:56', 1),
+	(97, 0, 45, '192.168.186.1', 'Register', 'User register suscess', '2023-11-21 22:28:26', 1),
+	(98, 0, 46, '192.168.186.1', 'Register', 'User register suscess', '2023-11-28 07:52:53', 1),
+	(99, 0, 47, '192.168.186.1', 'Register', 'User register suscess', '2023-11-28 07:54:33', 1),
+	(100, 1, 38, '192.168.186.1', 'Cancel Product', 'Customer cancel product: 16', '2023-11-29 11:35:15', 1),
+	(101, 1, 38, '192.168.186.1', 'Cancel Product', 'Customer cancel product: 16', '2023-11-29 11:35:26', 1),
+	(102, 1, 38, '192.168.186.1', 'Cancel Product', 'Customer cancel product: 8', '2023-11-29 11:35:30', 1),
+	(103, 1, 38, '192.168.186.1', 'Cancel Product', 'Customer cancel product: 8', '2023-11-29 11:35:38', 1),
+	(104, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 19', '2023-11-29 13:17:43', 1),
+	(105, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 19', '2023-11-29 13:18:56', 1),
+	(106, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 1', '2023-11-29 13:20:26', 1),
+	(107, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 6', '2023-11-29 13:38:53', 1),
+	(108, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 18', '2023-11-29 13:44:29', 1),
+	(109, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 18', '2023-11-29 13:56:16', 1),
+	(110, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 6', '2023-11-29 14:02:20', 1),
+	(111, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 6', '2023-11-29 14:11:43', 1),
+	(112, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 6', '2023-11-29 14:21:31', 1),
+	(113, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 19', '2023-11-29 14:24:02', 1),
+	(114, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 3', '2023-11-29 14:51:28', 1),
+	(115, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 3', '2023-11-29 15:14:03', 1),
+	(116, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 3', '2023-11-29 15:51:48', 1),
+	(117, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 14', '2023-11-29 17:34:50', 1),
+	(118, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 14', '2023-11-29 17:37:24', 1),
+	(119, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 14', '2023-11-29 17:41:24', 1),
+	(120, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 14', '2023-11-29 17:55:49', 1),
+	(121, 0, 38, '192.168.186.1', 'OrderPay', 'The customer makes the payment: 14', '2023-11-29 18:12:04', 1);
 
 -- Dumping structure for table web_ban_sach.news
 CREATE TABLE IF NOT EXISTS `news` (
@@ -749,6 +723,21 @@ CREATE TABLE IF NOT EXISTS `owner` (
 -- Dumping data for table web_ban_sach.owner: ~0 rows (approximately)
 INSERT INTO `owner` (`id_company`, `name_website`, `name_company`, `time_start_proprietary`, `time_finish_proprietary`, `information_company`) VALUES
 	(1, 'DORAEMON', 'Doraemon', '2022-11-11 20:41:21', NULL, 'Doraemon gồm 3 thành viên.');
+
+-- Dumping structure for table web_ban_sach.public_key
+CREATE TABLE IF NOT EXISTS `public_key` (
+  `id_key` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `public_Key` text DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `create_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expire` date DEFAULT NULL,
+  PRIMARY KEY (`id_key`),
+  KEY `id_user` (`id_user`),
+  CONSTRAINT `public_key_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `customer` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table web_ban_sach.public_key: ~0 rows (approximately)
 
 -- Dumping structure for table web_ban_sach.publisher
 CREATE TABLE IF NOT EXISTS `publisher` (
@@ -835,10 +824,7 @@ CREATE TABLE IF NOT EXISTS `rate` (
   CONSTRAINT `rate_ibfk_3` FOREIGN KEY (`id_order`) REFERENCES `bill` (`id_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- Dumping data for table web_ban_sach.rate: ~2 rows (approximately)
-INSERT INTO `rate` (`id_user`, `id_book`, `id_order`, `start_rate`, `comment`, `rate_time`, `status`) VALUES
-	(18, 14, 95, 5, 'sản phẩm tốt', '2023-06-13 09:07:19', 0),
-	(18, 18, 94, 4, 'sản phẩm khá tốt', '2023-06-13 08:36:27', 1);
+-- Dumping data for table web_ban_sach.rate: ~0 rows (approximately)
 
 -- Dumping structure for table web_ban_sach.slide_pr
 CREATE TABLE IF NOT EXISTS `slide_pr` (
