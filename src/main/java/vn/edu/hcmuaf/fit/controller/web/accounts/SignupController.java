@@ -12,9 +12,47 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 @WebServlet(name = "signup", value = "/signup")
 public class SignupController extends HttpServlet {
+    private static KeyPair keypair;
+    private static PublicKey publicKey_khoa;
+    private static PrivateKey privateKey_khoa;
+    static String publicKeyStr;
+    static String privateKeyStr;
+    public static String keyToString(PrivateKey privateKey) {
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
+        return Base64.getEncoder().encodeToString(keySpec.getEncoded());
+    }
+
+    public static String keyToString(PublicKey publicKey) {
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey.getEncoded());
+        return Base64.getEncoder().encodeToString(keySpec.getEncoded());
+    }
+
+    public static void create_key(){
+        // create key
+        KeyPairGenerator keyGenerator = null;
+        try {
+            keyGenerator = KeyPairGenerator.getInstance("RSA");
+            keyGenerator.initialize(2048);
+            keypair = keyGenerator.generateKeyPair();
+
+            publicKey_khoa = keypair.getPublic();
+            privateKey_khoa = keypair.getPrivate();
+            // Convert the keys to string format
+            privateKeyStr = keyToString(privateKey_khoa);
+            publicKeyStr  = keyToString(publicKey_khoa);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/views/web/signup.jsp").forward(request, response);
@@ -31,6 +69,7 @@ public class SignupController extends HttpServlet {
         String lname = request.getParameter("lname");
         String phone = request.getParameter("phoneNumber");
         String address = request.getParameter("address");
+        create_key();
         //String idUser = request.getParameter("id_user");
         if (!email.equals("") && !pass.equals("") && !re_pass.equals("") && !fname.equals("") && !lname.equals("")) {
             if (!pass.equals(re_pass)) {
@@ -42,9 +81,10 @@ public class SignupController extends HttpServlet {
                     EmailUtil sm = new EmailUtil();
                     String code = sm.getRandom();
                     CustomerModel user = new CustomerModel(email, pass, fname, lname, phone, address, code, System.currentTimeMillis() / 1000 / 60);
-                    sm.sendEmail(user);
+                    sm.sendEmail(user, privateKeyStr);
                     HttpSession session = request.getSession();
                     session.setAttribute("registerUser", user);
+                    session.setAttribute("public_key", publicKeyStr);
 
                     new MessageParameterUntil("Chúng tôi đã gửi mã xác minh đến email của bạn", "success", "/views/web/confirmRegister.jsp", request, response).send();
                 } else {
@@ -63,3 +103,4 @@ public class SignupController extends HttpServlet {
 
         }
     }
+
