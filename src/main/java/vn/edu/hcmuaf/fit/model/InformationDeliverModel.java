@@ -1,12 +1,12 @@
 package vn.edu.hcmuaf.fit.model;
 
 public class InformationDeliverModel {
-    int id, idOrder, x,y,z,w;
+    int id, idCart, x,y,z,w;
     String districtTo, warTo;
 
-    public InformationDeliverModel(int id, int idOrder, int x, int y, int z, int w, String districtTo, String warTo) {
+    public InformationDeliverModel(int id, int idCart, int x, int y, int z, int w, String districtTo, String warTo) {
         this.id = id;
-        this.idOrder = idOrder;
+        this.idCart = idCart;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -18,8 +18,8 @@ public class InformationDeliverModel {
     public InformationDeliverModel() {
     }
 
-    public InformationDeliverModel(int idOrder, int x, int y, int z, int w, String districtTo, String warTo) {
-        this.idOrder = idOrder;
+    public InformationDeliverModel(int idCart, int x, int y, int z, int w, String districtTo, String warTo) {
+        this.idCart = idCart;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -36,12 +36,12 @@ public class InformationDeliverModel {
         this.id = id;
     }
 
-    public int getIdOrder() {
-        return idOrder;
+    public int getIdCart() {
+        return idCart;
     }
 
-    public void setIdOrder(int idOrder) {
-        this.idOrder = idOrder;
+    public void setIdCart(int idCart) {
+        this.idCart = idCart;
     }
 
     public int getX() {
@@ -68,6 +68,14 @@ public class InformationDeliverModel {
         this.z = z;
     }
 
+    public int getW() {
+        return w;
+    }
+
+    public void setW(int w) {
+        this.w = w;
+    }
+
     public String getDistrictTo() {
         return districtTo;
     }
@@ -82,13 +90,5 @@ public class InformationDeliverModel {
 
     public void setWarTo(String warTo) {
         this.warTo = warTo;
-    }
-
-    public int getW() {
-        return w;
-    }
-
-    public void setW(int w) {
-        this.w = w;
     }
 }

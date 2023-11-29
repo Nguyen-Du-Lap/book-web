@@ -9,6 +9,7 @@ import vn.edu.hcmuaf.fit.model.CustomerModel;
 import vn.edu.hcmuaf.fit.model.InformationDeliverModel;
 import vn.edu.hcmuaf.fit.services.IBillService;
 import vn.edu.hcmuaf.fit.services.impl.BillService;
+import vn.edu.hcmuaf.fit.utils.MessageParameterUntil;
 import vn.edu.hcmuaf.fit.utils.SessionUtil;
 
 import javax.servlet.*;
@@ -17,6 +18,7 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,6 +26,8 @@ import java.util.Set;
 public class OrderPayController extends HttpServlet {
     IBillService billService = new BillService();
     CartDao dao = new CartDao();
+
+    InformationDeliverDao informationDeliverDao = new InformationDeliverDao();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -50,23 +54,39 @@ public class OrderPayController extends HttpServlet {
 
         CartModel cart = (CartModel) request.getSession().getAttribute("cartOrder");
         cart.setIdUser(cus.getIdUser());
+        // listIdRemove để xóa sản phẩm khỏi giỏ hàng
         List<Integer> listIdRemove = new ArrayList<>();
         Set<Integer> keySet = cart.getMap().keySet();
+
+        // list cartItem để add vào bill
+        List<CartItem> listCartItem = new LinkedList<>();
         for (Integer key : keySet) {
             CartItem item = cart.getMap().get(key);
-            billService.addBill(cus.getIdUser(), item.getProduct().getIdBook(),
-                    address, city, district, ward, packInt, payInt,
-                    item.getQuantity(), cart.getTotalPriceShipVoucher(), info, phone, dao.setID(),request, response);
-            Log log = new Log(Log.INFO,ip,"OrderPay", cus.getIdUser(), "The customer makes the payment: "+ item.getProduct().getIdBook(),1);
-            log.insert();
+            listCartItem.add(item);
             listIdRemove.add(item.getProduct().getIdBook());
         }
+
+        int idCart = dao.insertCart( cart.getIdUser(),cart.getTimeShip(),cart.getShip(), cart.getTotalPriceShipVoucher(),"1" );
+
+
+        // lấy thông tin từ session ra
         HttpSession httpSession = request.getSession();
         InformationDeliverModel informationDeliverModel = (InformationDeliverModel) httpSession.getAttribute("deliver");
-        informationDeliverModel.setIdOrder(dao.setID());
-        InformationDeliverDao informationDeliverDao = new InformationDeliverDao();
+        informationDeliverModel.setIdCart(idCart);
+
+        // lưu informationDeliver vào DB
         informationDeliverDao.insertInfomationDeliver(informationDeliverModel);
-        dao.insertCart( cart.getIdUser(),cart.getTimeShip(),cart.getShip(), cart.getTotalPriceShipVoucher(),"1" );
+
+        // add bill vào DB
+        for(CartItem cartItem : listCartItem) {
+            billService.addBill(cus.getIdUser(), cartItem.getProduct().getIdBook(),
+                    address, city, district, ward, packInt, payInt,
+                    cartItem.getQuantity(), cart.getTotalPriceShipVoucher(), info, phone, idCart ,request, response);
+        }
+
+
+
+        // xóa dữ liệu khỏi session
         billService.removeProductInCart(listIdRemove, request);
         response.sendRedirect(request.getContextPath()+"/order/reviewOrder?orderSuccess=1");
     }

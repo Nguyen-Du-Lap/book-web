@@ -326,21 +326,22 @@ public class BillDAO implements IBillDAO {
                        int paymentMethod, int pack, int quantity,
                        double totalPrice, String info, String phone,int idCart) {
         Connection connection = JDBCConnector.getConnection();
-        String sql = new String("INSERT INTO bill(id_user, id_book, address, pack, payment_method, totalBill, quantity, phone, info,idCart)\n" +
+        String sql = new String("INSERT INTO bill(id_user, id_book, idCart, address, pack, payment_method, totalBill, quantity, phone, info)\n" +
                 "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?,?)");
         PreparedStatement statement = null;
         try {
             statement = connection.prepareStatement(sql.toString());
             statement.setInt(1, idUser);
             statement.setInt(2, idBook);
-            statement.setString(3, address);
-            statement.setInt(4, pack);
-            statement.setInt(5, paymentMethod);
-            statement.setDouble(6, totalPrice);
-            statement.setInt(7, quantity);
-            statement.setString(8, phone);
-            statement.setString(9, info);
-            statement.setInt(10,idCart);
+            statement.setInt(3,idCart);
+            statement.setString(4, address);
+            statement.setInt(5, pack);
+            statement.setInt(6, paymentMethod);
+            statement.setDouble(7, totalPrice);
+            statement.setInt(8, quantity);
+            statement.setString(9, phone);
+            statement.setString(10, info);
+
 
             return statement.executeUpdate();
 
