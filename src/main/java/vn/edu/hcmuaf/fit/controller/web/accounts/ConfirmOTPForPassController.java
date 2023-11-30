@@ -29,6 +29,7 @@ public class ConfirmOTPForPassController extends HttpServlet {
         String code = request.getParameter("code");
         HttpSession session = request.getSession();
         CustomerModel user = (CustomerModel) session.getAttribute("UserForgotPass");
+        String public_key = (String) session.getAttribute("public_key");
         int attemts =(int) session.getAttribute("attempts");
         CustomerDAO dao = new CustomerDAO();
         //String idUser = request.getParameter("id_user");
