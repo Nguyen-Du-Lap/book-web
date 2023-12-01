@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillDAO implements IBillDAO {
-
     @Override
     public int totalBill() {
         Connection connection = JDBCConnector.getConnection();

@@ -8,6 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartDao {
+    public void updateVerify(int idCart, String stringHash) {
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+
+        if (connection != null) {
+            try {
+                String sql = "UPDATE carts SET verify = ? WHERE id = ?";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, stringHash);
+                statement.setInt(2, idCart);
+                statement.executeUpdate();
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (connection != null) connection.close();
+                    if (statement != null) statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public int setID() {
         Connection connection = JDBCConnector.getConnection();
         String sql = new String("SELECT id FROM carts ORDER BY id DESC LIMIT 1;");

@@ -91,4 +91,18 @@ public class InformationDeliverModel {
     public void setWarTo(String warTo) {
         this.warTo = warTo;
     }
+
+    @Override
+    public String toString() {
+        return "InformationDeliverModel{" +
+                "id=" + id +
+                ", idCart=" + idCart +
+                ", x=" + x +
+                ", y=" + y +
+                ", z=" + z +
+                ", w=" + w +
+                ", districtTo='" + districtTo + '\'' +
+                ", warTo='" + warTo + '\'' +
+                '}';
+    }
 }
