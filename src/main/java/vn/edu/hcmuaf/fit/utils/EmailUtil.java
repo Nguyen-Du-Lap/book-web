@@ -45,6 +45,50 @@ public class EmailUtil {
         int number = rnd.nextInt(999999);
         return String.format("%06d", number);
     }
+    public boolean sendEmail(CustomerModel user, String private_key) {
+        boolean test = false;
+
+        String toEmail = user.getEmail();
+        String fromEmail = "lapnguyen37651@gmail.com";
+        String password = "pgvh dkgh nejm jeix";
+
+        try {
+            Properties pr = new Properties();
+            pr.put("mail.smtp.host", "smtp.gmail.com");
+            pr.put("mail.smtp.port", "587");
+            pr.put("mail.smtp.auth", "true");
+            pr.put("mail.smtp.starttls.enable", "true");
+            Session session = Session.getInstance(pr, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(fromEmail, password);
+                }
+            });
+
+            //set email message details
+            Message mess = new MimeMessage(session);
+
+            //set from email address
+            mess.setFrom(new InternetAddress(fromEmail));
+            //set to email address or destination email address
+            mess.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+
+            //set email subject
+            mess.setSubject("User Email Verification");
+
+            //set message text
+            mess.setText("Registered successfully.Please verify your account using this code: " + user.getCode() + "\n"
+                         + "This is your private key: " + "\n" + private_key);
+            //send the message
+            Transport.send(mess);
+            test=true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return test;
+    }
     public boolean sendEmail(CustomerModel user) {
         boolean test = false;
 
@@ -80,7 +124,6 @@ public class EmailUtil {
             mess.setText("Registered successfully.Please verify your account using this code: " + user.getCode());
             //send the message
             Transport.send(mess);
-
             test=true;
 
         } catch (Exception e) {

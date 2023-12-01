@@ -100,6 +100,60 @@ CustomerDAO implements ICustomerDAO {
 
     }
 
+    public int take_id() {
+        String sql = new String("SELECT id_user FROM customer " +
+                "WHERE id_user = (SELECT MAX(id_user) FROM customer)");
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        int result = 0;
+        if (connection != null) {
+            try {
+                statement = connection.prepareStatement(sql.toString());
+                resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    result = resultSet.getInt(1);
+                }
+                return result;
+            } catch (SQLException e) {
+                return 0;
+            } finally {
+                try {
+                    if (connection != null) connection.close();
+                    if (statement != null) statement.close();
+                    if (resultSet != null) resultSet.close();
+                } catch (SQLException e) {
+                    return 0;
+                }
+            }
+        }
+        return 0;
+    }
+    public void insert_publicKey(int id, String public_key) {
+        String sql = new String("INSERT INTO public_key (id_user,public_key, status)\n" +
+                "VALUES (?,?,1)");
+        PreparedStatement statement = null;
+        try {
+            Connection connection = JDBCConnector.getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            statement.setInt(1, id);
+            statement.setString(2, public_key);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            // Log or print the exception stack trace for debugging
+            e.printStackTrace();
+        } finally {
+            // Close the statement (and possibly the connection, depending on your setup)
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     public void signup(String email, String password, String firstname, String lastname, String phone, String address) {
         String sql = new String("INSERT INTO customer (first_name, last_name, email, password, address, phone, role, status)\n" +
                 "VALUES (?, ?, ?, ?, ?, ?, 'user', 1)");
