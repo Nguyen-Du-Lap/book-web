@@ -70,13 +70,14 @@ public class HomeController extends HttpServlet {
             String email = req.getParameter("email");
             String password = req.getParameter("password");
             if (email != null && password != null && !password.equals("")) {
-
                 CustomerModel customer = customerService.findByUsernameAndPasswordAndStatus(email, MD5Utils.encrypt(password), 1);
                 if (customer != null) {
                     BLockUserDAO.resetAccount(email);
                     SessionUtil.getInstance().putValue(req, "USERMODEL", customer);
                     if (customer.getRole().equalsIgnoreCase("user")) {
-
+                        SessionUtil.getInstance().putValue(req, "PASSWORD_USER",customer.getPassword());
+                        SessionUtil.getInstance().putValue(req, "ID_USER",customer.getIdUser());
+                        SessionUtil.getInstance().putValue(req, "MAIL",customer.getEmail());
                         resp.sendRedirect(req.getContextPath() + "/home");
 
                     } else if (customer.getRole().equalsIgnoreCase("admin")) {

@@ -4,14 +4,18 @@ import org.apache.poi.ss.formula.functions.Rate;
 import vn.edu.hcmuaf.fit.dao.IBillDAO;
 import vn.edu.hcmuaf.fit.dao.impl.BillDAO;
 import vn.edu.hcmuaf.fit.dao.impl.CartDao;
+import vn.edu.hcmuaf.fit.dao.impl.CustomerDAO;
 import vn.edu.hcmuaf.fit.dao.impl.RateDAO;
 import vn.edu.hcmuaf.fit.model.*;
+import vn.edu.hcmuaf.fit.utils.MD5Utils;
+import vn.edu.hcmuaf.fit.utils.MessageParameterUntil;
 import vn.edu.hcmuaf.fit.utils.SessionUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +29,7 @@ public class AccountController extends HttpServlet {
         String action = request.getParameter("action");
         CustomerModel cus = (CustomerModel) SessionUtil.getInstance().getValue(request, "USERMODEL");
         if(cus == null) {
-            response.sendRedirect("/login?action=login");
+            response.sendRedirect(request.getContextPath()+"/login?action=login");
         }else {
 
             if (action != null) {
@@ -41,6 +45,8 @@ public class AccountController extends HttpServlet {
                     request.setAttribute("listBillRateByIdOrder",  cartModelsChuaRate(cus,3));
                     request.setAttribute("listBillByIdOrder", listDonHang(cus,3));
                     request.getRequestDispatcher("/views/web/reviewOrders.jsp").forward(request, response);
+                } else if (action.equalsIgnoreCase("changePrivateKey")) {
+                    new MessageParameterUntil("", "", "/views/web/confirmPassPrivateKey.jsp", request, response).send();
                 }
             } else {
                 request.setAttribute("cus", cus);
@@ -53,7 +59,6 @@ public class AccountController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
     }
-
     public List<CartModel> listDonHang(CustomerModel cus, int info) {
         CartDao cartDao = new CartDao();
         List<CartModel> listModel = cartDao.getAllCartByIdUser(cus.getIdUser());
