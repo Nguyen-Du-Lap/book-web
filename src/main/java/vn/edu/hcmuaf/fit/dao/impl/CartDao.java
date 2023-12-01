@@ -8,6 +8,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartDao {
+    public CartVerifyModel findCartById(int idCart) {
+        CartVerifyModel result = new CartVerifyModel();
+
+        String sql = "SELECT id, idUser, timeShip, feeShip, totalPrice FROM carts WHERE id =?";
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        if(connection != null) {
+            try {
+                statement = connection.prepareStatement(sql);
+                statement.setInt(1, idCart);
+
+                resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+
+                    result.setId(resultSet.getInt(1));
+                    result.setIdUser(resultSet.getInt(2));
+                    result.setTimeShip(resultSet.getString(3));
+                    result.setFeeShip(resultSet.getDouble(4));
+                    result.setTotalPrice(resultSet.getDouble(5));
+
+                }
+
+                return result;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return result;
+            } finally {
+                try {
+                    if(connection != null) connection.close();
+                    if(statement != null) statement.close();
+                    if(resultSet != null) resultSet.close();
+                } catch (SQLException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
     public int setID() {
         Connection connection = JDBCConnector.getConnection();
         String sql = new String("SELECT id FROM carts ORDER BY id DESC LIMIT 1;");

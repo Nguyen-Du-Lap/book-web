@@ -12,6 +12,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillDAO implements IBillDAO {
+    public List<BillVerify> findBillByIdCart(int idCart)  {
+        List<BillVerify> results = new ArrayList<>();
+        String sql = "SELECT id_order,id_user,id_book,idCart,id_discount,address,pack,payment_method,totalBill,quantity,phone,info \n" +
+                "FROM bill \n" +
+                "WHERE idCart = ?";
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        if(connection != null) {
+            try {
+                statement = connection.prepareStatement(sql);
+                statement.setInt(1, idCart);
+                resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    BillVerify billVerify = new BillVerify();
+                    billVerify.setIdOrder(resultSet.getInt(1));
+                    billVerify.setIdUser(resultSet.getInt(2));
+                    billVerify.setIdBook(resultSet.getInt(3));
+                    billVerify.setIdCart(resultSet.getInt(4));
+                    billVerify.setIdDiscount(resultSet.getInt(5));
+                    billVerify.setAddress(resultSet.getString(6));
+                    billVerify.setPack(resultSet.getInt(7));
+                    billVerify.setPaymentMethod(resultSet.getInt(8));
+                    billVerify.setTotalBill(resultSet.getDouble(9));
+                    billVerify.setQuantity(resultSet.getInt(10));
+                    billVerify.setPhone(resultSet.getString(11));
+                    billVerify.setInfo(resultSet.getString(12));
+                    results.add(billVerify);
+                }
+
+                return results;
+            } catch (SQLException e) {
+                return null;
+            } finally {
+                try {
+                    if(connection != null) connection.close();
+                    if(statement != null) statement.close();
+                    if(resultSet != null) resultSet.close();
+                } catch (SQLException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     public int totalBill() {

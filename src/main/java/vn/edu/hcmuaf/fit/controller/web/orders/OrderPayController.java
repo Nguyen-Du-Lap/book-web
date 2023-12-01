@@ -1,6 +1,7 @@
 package vn.edu.hcmuaf.fit.controller.web.orders;
 
 import vn.edu.hcmuaf.fit.bean.Log;
+import vn.edu.hcmuaf.fit.dao.impl.BillDAO;
 import vn.edu.hcmuaf.fit.dao.impl.CartDao;
 import vn.edu.hcmuaf.fit.dao.impl.InformationDeliverDao;
 import vn.edu.hcmuaf.fit.model.CartModel;
@@ -28,6 +29,7 @@ public class OrderPayController extends HttpServlet {
     CartDao dao = new CartDao();
 
     InformationDeliverDao informationDeliverDao = new InformationDeliverDao();
+    BillDAO billDAO = new BillDAO();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -84,8 +86,11 @@ public class OrderPayController extends HttpServlet {
                     cartItem.getQuantity(), cart.getTotalPriceShipVoucher(), info, phone, idCart ,request, response);
         }
 
-
-
+        // add cột verify
+        ;
+        System.out.println(billDAO.findBillByIdCart(idCart));
+        System.out.println(informationDeliverModel);
+        System.out.println(dao.findCartById(idCart));
         // xóa dữ liệu khỏi session
         billService.removeProductInCart(listIdRemove, request);
         response.sendRedirect(request.getContextPath()+"/order/reviewOrder?orderSuccess=1");
