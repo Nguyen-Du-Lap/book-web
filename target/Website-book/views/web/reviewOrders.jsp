@@ -128,6 +128,16 @@
                   Đặt hàng thành công
               </div>
             </c:if>
+            <c:if test="${isVerify == '1'}">
+              <div class="alert alert-success" role="alert">
+                Đơn hàng đã được xác thực
+              </div>
+            </c:if>
+            <c:if test="${isVerify == '0'}">
+              <div class="alert alert-danger" role="alert">
+                Đơn hàng chưa được xác thực
+              </div>
+            </c:if>
             <div id="ChoXacNhan" class="tabcontent">
               <table class="table">
                 <thead>

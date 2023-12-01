@@ -1,11 +1,13 @@
 package vn.edu.hcmuaf.fit.controller.web.key;
 
 import vn.edu.hcmuaf.fit.dao.impl.DiscountCustomerDAO;
+import vn.edu.hcmuaf.fit.db.MessageProperties;
 import vn.edu.hcmuaf.fit.model.CartModel;
 import vn.edu.hcmuaf.fit.model.CustomerModel;
 import vn.edu.hcmuaf.fit.services.IOrderService;
 import vn.edu.hcmuaf.fit.services.impl.OrderService;
 import vn.edu.hcmuaf.fit.utils.MessageParameterUntil;
+import vn.edu.hcmuaf.fit.utils.RSAUtil;
 import vn.edu.hcmuaf.fit.utils.SessionUtil;
 
 import javax.servlet.*;
@@ -38,7 +40,15 @@ public class PrivateKeyController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String privateKey = request.getParameter("privateKey");
-        request.getSession().setAttribute("PRIVATE_KEY", privateKey);
-        response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
+        RSAUtil rsa = new RSAUtil();
+        try {
+            rsa.setPrivateKey(privateKey);
+            rsa.encrypt("Test");
+            request.getSession().setAttribute("PRIVATE_KEY", privateKey);
+            response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
+        } catch (Exception e) {
+            new MessageParameterUntil("Private key không hợp lệ!", "danger", "/views/web/cart.jsp", request, response).send();
+        }
+
     }
 }

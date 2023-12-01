@@ -117,5 +117,4 @@ public class RSAUtil {
         byte[] output = cipher.doFinal(Base64.getDecoder().decode(data));
         return new String(output, StandardCharsets.UTF_8);
     }
-
 }
