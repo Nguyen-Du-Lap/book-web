@@ -317,12 +317,6 @@ public class CartDao {
         return null;
     }
 
-    /**
-     *  Lấy chuỗi hash theo id user và id cart
-     * @param idUser
-     * @param idCart
-     * @return
-     */
     public String getHash(int idCart, int idUser) {
         String query = "SELECT verify FROM `carts` WHERE id = ? AND idUser = ?";
         Connection connection = JDBCConnector.getConnection();
