@@ -27,11 +27,13 @@ public class ConfirmOTPController extends HttpServlet {
         String code = request.getParameter("code");
         HttpSession session = request.getSession();
         CustomerModel user = (CustomerModel) session.getAttribute("registerUser");
+        String public_key = (String) session.getAttribute("public_key");
+
         CustomerDAO dao = new CustomerDAO();
         //String idUser = request.getParameter("id_user");
         if(code.equals(user.getCode()) && (System.currentTimeMillis() / 1000/60) - user.getTime_active_code() <= 5){
             dao.signup(user.getEmail(), MD5Utils.encrypt( user.getPassword()), user.getFirstName(),user.getLastName(), user.getPhone(), user.getAddress());
-
+            dao.insert_publicKey(dao.take_id(), public_key);
 
             session.removeAttribute("registerUser");
             request.getRequestDispatcher("/views/login.jsp").forward(request,response );
