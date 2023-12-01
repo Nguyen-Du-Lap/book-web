@@ -82,10 +82,12 @@ public class SignupController extends HttpServlet {
                     EmailUtil sm = new EmailUtil();
                     String code = sm.getRandom();
                     CustomerModel user = new CustomerModel(email, pass, fname, lname, phone, address, code, System.currentTimeMillis() / 1000 / 60);
-                    sm.sendEmail(user, privateKeyStr);
+                    sm.sendEmail(user);
                     HttpSession session = request.getSession();
                     session.setAttribute("registerUser", user);
                     session.setAttribute("public_key", publicKeyStr);
+                    session.setAttribute("private_key", privateKeyStr);
+                    session.setAttribute("toEmail", user.getEmail());
 
                     new MessageParameterUntil("Chúng tôi đã gửi mã xác minh đến email của bạn", "success", "/views/web/confirmRegister.jsp", request, response).send();
                 } else {

@@ -3,6 +3,7 @@ package vn.edu.hcmuaf.fit.controller.web.accounts;
 import vn.edu.hcmuaf.fit.bean.Log;
 import vn.edu.hcmuaf.fit.dao.impl.CustomerDAO;
 import vn.edu.hcmuaf.fit.model.CustomerModel;
+import vn.edu.hcmuaf.fit.utils.EmailUtil;
 import vn.edu.hcmuaf.fit.utils.MD5Utils;
 
 import javax.servlet.*;
@@ -28,12 +29,16 @@ public class ConfirmOTPController extends HttpServlet {
         HttpSession session = request.getSession();
         CustomerModel user = (CustomerModel) session.getAttribute("registerUser");
         String public_key = (String) session.getAttribute("public_key");
+        String private_key = (String) session.getAttribute("private_key");
+        String toEmail = (String) session.getAttribute("toEmail");
 
         CustomerDAO dao = new CustomerDAO();
         //String idUser = request.getParameter("id_user");
         if(code.equals(user.getCode()) && (System.currentTimeMillis() / 1000/60) - user.getTime_active_code() <= 5){
             dao.signup(user.getEmail(), MD5Utils.encrypt( user.getPassword()), user.getFirstName(),user.getLastName(), user.getPhone(), user.getAddress());
             dao.insert_publicKey(dao.take_id(), public_key);
+            EmailUtil sm = new EmailUtil();
+            sm.sendEmail(toEmail, private_key);
 
             session.removeAttribute("registerUser");
             request.getRequestDispatcher("/views/login.jsp").forward(request,response );
