@@ -154,6 +154,31 @@ CustomerDAO implements ICustomerDAO {
             }
         }
     }
+    public void update_publicKey(int id) {
+        String sql = new String("UPDATE public_key\n" +
+                "SET `status` = 0, `expire` = CURRENT_DATE\n" +
+                "WHERE id_user = ?");
+        PreparedStatement statement = null;
+        try {
+            Connection connection = JDBCConnector.getConnection();
+            statement = connection.prepareStatement(sql.toString());
+            statement.setInt(1, id);
+            statement.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            // Log or print the exception stack trace for debugging
+            e.printStackTrace();
+        } finally {
+            // Close the statement (and possibly the connection, depending on your setup)
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     public void signup(String email, String password, String firstname, String lastname, String phone, String address) {
         String sql = new String("INSERT INTO customer (first_name, last_name, email, password, address, phone, role, status)\n" +
                 "VALUES (?, ?, ?, ?, ?, ?, 'user', 1)");

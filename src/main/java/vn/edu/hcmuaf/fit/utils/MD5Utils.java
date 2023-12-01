@@ -17,16 +17,10 @@ public class MD5Utils {
                 hexString.append(String.format("%02x", b));
             }
             String str = hexString.toString();
-
-
             Random rand = new Random();
-
 
             char randomChar1 = (char) (rand.nextInt(26) + 'a');
             char randomChar2 = (char) (rand.nextInt(26) + 'a');
-
-
-
 
             String result = str.substring(0, 1) + randomChar1 + randomChar2 + str.substring(1);
             return result;
@@ -34,6 +28,7 @@ public class MD5Utils {
             throw new RuntimeException(e);
         }
     }
+
 
 
 
