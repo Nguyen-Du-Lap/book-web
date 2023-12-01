@@ -57,4 +57,15 @@ public class CartDetailModel {
     public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
+
+    @Override
+    public String toString() {
+        return "CartDetailModel{" +
+                "id=" + id +
+                ", nameSach='" + nameSach + '\'' +
+                ", quantity=" + quantity +
+                ", image='" + image + '\'' +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
 }

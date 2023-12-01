@@ -114,4 +114,18 @@ public class OrderReviewDetail {
             this.trangThai = "Đã hủy";
         }
     }
+
+    @Override
+    public String toString() {
+        return "OrderReviewDetail{" +
+                "fullName='" + fullName + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", idcart=" + idcart +
+                ", create_order_time='" + create_order_time + '\'' +
+                ", timeShip='" + timeShip + '\'' +
+                ", totolPrice=" + totolPrice +
+                '}';
+    }
 }

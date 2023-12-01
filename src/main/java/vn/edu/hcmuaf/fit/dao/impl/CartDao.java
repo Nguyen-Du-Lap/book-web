@@ -8,45 +8,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartDao {
-    public CartVerifyModel findCartById(int idCart) {
-        CartVerifyModel result = new CartVerifyModel();
-
-        String sql = "SELECT id, idUser, timeShip, feeShip, totalPrice FROM carts WHERE id =?";
+    public void updateVerify(int idCart, String stringHash) {
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        if(connection != null) {
+
+        if (connection != null) {
             try {
+                String sql = "UPDATE carts SET verify = ? WHERE id = ?";
                 statement = connection.prepareStatement(sql);
-                statement.setInt(1, idCart);
+                statement.setString(1, stringHash);
+                statement.setInt(2, idCart);
+                statement.executeUpdate();
 
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
-
-                    result.setId(resultSet.getInt(1));
-                    result.setIdUser(resultSet.getInt(2));
-                    result.setTimeShip(resultSet.getString(3));
-                    result.setFeeShip(resultSet.getDouble(4));
-                    result.setTotalPrice(resultSet.getDouble(5));
-
-                }
-
-                return result;
             } catch (SQLException e) {
                 e.printStackTrace();
-                return result;
             } finally {
                 try {
-                    if(connection != null) connection.close();
-                    if(statement != null) statement.close();
-                    if(resultSet != null) resultSet.close();
+                    if (connection != null) connection.close();
+                    if (statement != null) statement.close();
                 } catch (SQLException e) {
-                    return null;
+                    e.printStackTrace();
                 }
             }
         }
-        return null;
     }
+
     public int setID() {
         Connection connection = JDBCConnector.getConnection();
         String sql = new String("SELECT id FROM carts ORDER BY id DESC LIMIT 1;");

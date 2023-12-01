@@ -11,6 +11,8 @@ import vn.edu.hcmuaf.fit.model.InformationDeliverModel;
 import vn.edu.hcmuaf.fit.services.IBillService;
 import vn.edu.hcmuaf.fit.services.impl.BillService;
 import vn.edu.hcmuaf.fit.utils.MessageParameterUntil;
+import vn.edu.hcmuaf.fit.utils.ObjectVerifyUtil;
+import vn.edu.hcmuaf.fit.utils.SHA256Util;
 import vn.edu.hcmuaf.fit.utils.SessionUtil;
 
 import javax.servlet.*;
@@ -26,10 +28,12 @@ import java.util.Set;
 @WebServlet(name = "order/pay", value = "/order/pay")
 public class OrderPayController extends HttpServlet {
     IBillService billService = new BillService();
-    CartDao dao = new CartDao();
+    CartDao cartDao = new CartDao();
 
     InformationDeliverDao informationDeliverDao = new InformationDeliverDao();
-    BillDAO billDAO = new BillDAO();
+    SHA256Util sha256 = new SHA256Util();
+    ObjectVerifyUtil objectVerify = new ObjectVerifyUtil();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -68,7 +72,7 @@ public class OrderPayController extends HttpServlet {
             listIdRemove.add(item.getProduct().getIdBook());
         }
 
-        int idCart = dao.insertCart( cart.getIdUser(),cart.getTimeShip(),cart.getShip(), cart.getTotalPriceShipVoucher(),"1" );
+        int idCart = cartDao.insertCart( cart.getIdUser(),cart.getTimeShip(),cart.getShip(), cart.getTotalPriceShipVoucher(),"1" );
 
 
         // lấy thông tin từ session ra
@@ -87,10 +91,11 @@ public class OrderPayController extends HttpServlet {
         }
 
         // add cột verify
-        ;
-        System.out.println(billDAO.findBillByIdCart(idCart));
-        System.out.println(informationDeliverModel);
-        System.out.println(dao.findCartById(idCart));
+        int idUser = cus.getIdUser();
+        String stringObject = objectVerify.string(idUser, idCart);
+        String stringHash = sha256.check(stringObject);
+        //lưu xuống cột verify
+        cartDao.updateVerify(idCart, stringHash);
         // xóa dữ liệu khỏi session
         billService.removeProductInCart(listIdRemove, request);
         response.sendRedirect(request.getContextPath()+"/order/reviewOrder?orderSuccess=1");
