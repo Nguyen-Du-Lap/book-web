@@ -180,8 +180,11 @@
 
   });
 
+  <%--$('.order').on('click', function () {--%>
+  <%--  window.location.href = '${pageContext.request.contextPath}/orderAddVoucher?list_id=' + enabledSettings--%>
+  <%--})--%>
   $('.order').on('click', function () {
-    window.location.href = '${pageContext.request.contextPath}/orderAddVoucher?list_id=' + enabledSettings
+    window.location.href = '${pageContext.request.contextPath}/privateKey?list_id=' + enabledSettings
   })
 </script>
 

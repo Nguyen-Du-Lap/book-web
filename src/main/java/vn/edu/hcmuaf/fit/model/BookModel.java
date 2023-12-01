@@ -18,6 +18,20 @@ public class BookModel  extends AbstractModel<BookModel> {
     private String idP;
     private int quantity;
     private String catalog;
+    private String verify;
+    public BookModel(String verify) {
+        this.verify = verify;
+    }
+
+    public String getVerify() {
+        return verify;
+    }
+
+    public void setVerify(String verify) {
+        this.verify = verify;
+    }
+
+
 
     public BookModel() {
     }
@@ -148,7 +162,7 @@ public class BookModel  extends AbstractModel<BookModel> {
                 ", discount=" + discount +
                 ", quantityStart=" + quantityStart +
                 ", quantityComment=" + quantityComment +
-                ", image='" + image + '\'' +
+                ", image='" + image + '\'' + ", verify'" + verify+ '\'' +
                 '}';
     }
 }

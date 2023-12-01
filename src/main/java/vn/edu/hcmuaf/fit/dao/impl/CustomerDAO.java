@@ -179,6 +179,24 @@ CustomerDAO implements ICustomerDAO {
             }
         }
     }
+    public String getPublicKey(int idUser) {
+        String result = null;
+        Connection connection = JDBCConnector.getConnection();
+        String sql = new String("SELECT public_key FROM public_key WHERE id_user = ? AND status = 1");
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            statement = connection.prepareStatement(sql.toString());
+            statement.setInt(1, idUser);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                result = resultSet.getString(1);
+            }
+            return result;
+        } catch (SQLException e) {
+            return null;
+        }
+    }
     public void signup(String email, String password, String firstname, String lastname, String phone, String address) {
         String sql = new String("INSERT INTO customer (first_name, last_name, email, password, address, phone, role, status)\n" +
                 "VALUES (?, ?, ?, ?, ?, ?, 'user', 1)");
