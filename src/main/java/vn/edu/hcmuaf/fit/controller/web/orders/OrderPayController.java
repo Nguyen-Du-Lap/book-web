@@ -3,6 +3,7 @@ package vn.edu.hcmuaf.fit.controller.web.orders;
 import vn.edu.hcmuaf.fit.bean.Log;
 import vn.edu.hcmuaf.fit.dao.impl.BillDAO;
 import vn.edu.hcmuaf.fit.dao.impl.CartDao;
+import vn.edu.hcmuaf.fit.dao.impl.CustomerDAO;
 import vn.edu.hcmuaf.fit.dao.impl.InformationDeliverDao;
 import vn.edu.hcmuaf.fit.model.CartModel;
 import vn.edu.hcmuaf.fit.model.CartItem;
@@ -10,10 +11,7 @@ import vn.edu.hcmuaf.fit.model.CustomerModel;
 import vn.edu.hcmuaf.fit.model.InformationDeliverModel;
 import vn.edu.hcmuaf.fit.services.IBillService;
 import vn.edu.hcmuaf.fit.services.impl.BillService;
-import vn.edu.hcmuaf.fit.utils.MessageParameterUntil;
-import vn.edu.hcmuaf.fit.utils.ObjectVerifyUtil;
-import vn.edu.hcmuaf.fit.utils.SHA256Util;
-import vn.edu.hcmuaf.fit.utils.SessionUtil;
+import vn.edu.hcmuaf.fit.utils.*;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -33,6 +31,8 @@ public class OrderPayController extends HttpServlet {
     InformationDeliverDao informationDeliverDao = new InformationDeliverDao();
     SHA256Util sha256 = new SHA256Util();
     ObjectVerifyUtil objectVerify = new ObjectVerifyUtil();
+    CustomerDAO customerDAO = new CustomerDAO();
+    RSAUtil rsa = new RSAUtil();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -94,8 +94,22 @@ public class OrderPayController extends HttpServlet {
         int idUser = cus.getIdUser();
         String stringObject = objectVerify.string(idUser, idCart);
         String stringHash = sha256.check(stringObject);
-        //lưu xuống cột verify
-        cartDao.updateVerify(idCart, stringHash);
+
+        String publicKey = (String) request.getSession().getAttribute("PRIVATE_KEY");
+
+        try {
+            // set khóa privateKey đã mã hóa
+            rsa.setPrivateKey(publicKey);
+            String result = rsa.encrypt(stringHash);
+            //lưu xuống cột verify
+            cartDao.updateVerify(idCart, result);
+        } catch (Exception e) {
+            System.out.println("Đặt hàng thất bại khóa không hợp lệ");
+            throw new RuntimeException(e);
+        }
+
+
+
         // xóa dữ liệu khỏi session
         billService.removeProductInCart(listIdRemove, request);
         response.sendRedirect(request.getContextPath()+"/order/reviewOrder?orderSuccess=1");
