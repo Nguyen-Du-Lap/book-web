@@ -16,6 +16,7 @@ public class OrderDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         CustomerModel cus = (CustomerModel) SessionUtil.getInstance().getValue(request ,"USERMODEL");
         String id = request.getParameter("id");
+          System.out.println(id);
         int idInt = Integer.parseInt(id);
         int idUser = cus.getIdUser();
         request.setAttribute("orderReviewDetail", cartDao.getAllByIdUserAndIdCart(idUser,idInt));

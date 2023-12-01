@@ -316,6 +316,83 @@ public class CartDao {
         }
         return null;
     }
+
+    public String getHash(int idCart, int idUser) {
+        String query = "SELECT verify FROM `carts` WHERE id = ? AND idUser = ?";
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        if (connection != null) {
+            try {
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, idCart);
+                statement.setInt(2, idUser);
+                resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    return resultSet.getString(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();  // Handle or log the exception as needed
+            } finally {
+                try {
+                    if (resultSet != null) resultSet.close();
+                    if (statement != null) statement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();  // Handle or log the exception as needed
+                }
+            }
+        }
+        return null;  // Return null if no result is found
+    }
+
+    /**
+     * Lấy public key gần nhất đơn hàng đó
+     * @param idCart
+     * @param idUser
+     * @return
+     */
+    public String getPuclickey(int idCart ,int idUser){
+        String query = "SELECT DISTINCT `public_key`.public_Key , public_key.create_date\n" +
+                "\n" +
+                "FROM `customer`\n" +
+                "JOIN `public_key` ON customer.id_user = public_key.id_user\n" +
+                "JOIN carts ON customer.id_user = carts.idUser\n" +
+                "WHERE carts.id = ?" +
+                "  AND carts.idUser = ?" +
+                "  AND (public_key.expire IS NULL OR carts.create_time > public_key.expire)\n" +
+                "ORDER BY carts.create_time DESC\n" +
+                "LIMIT 1;";
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        if (connection != null) {
+            try {
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, idCart);
+                statement.setInt(2, idUser);
+                resultSet = statement.executeQuery();
+
+                if (resultSet.next()) {
+                    return resultSet.getString(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();  // Handle or log the exception as needed
+            } finally {
+                try {
+                    if (resultSet != null) resultSet.close();
+                    if (statement != null) statement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();  // Handle or log the exception as needed
+                }
+            }
+        }
+        return null;  // Return null if no result is found
+    }
     public ArrayList<BookModel> bookHetHang() {
         String sql = "SELECT b.id_book, b.NAME, b.quantity, b.price,  ct.name\n" +
                 "FROM book b JOIN catalog ct ON b.id_catalog = ct.id_catalog\n" +
@@ -516,5 +593,11 @@ public class CartDao {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        CartDao cartDao = new CartDao();
+        System.out.println( cartDao.getHash(32,49));
+        System.out.println( cartDao.getPuclickey(32,49));
     }
 }
