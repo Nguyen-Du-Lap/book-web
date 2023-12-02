@@ -31,7 +31,7 @@ public class RegisterOrderController extends HttpServlet {
         CustomerModel cus = (CustomerModel) SessionUtil.getInstance().getValue(request, "USERMODEL");
         InetAddress myIP=InetAddress.getLocalHost();
         String ip= myIP.getHostAddress();
-        CartDao dao = new CartDao();
+        CartDao cartDao = new CartDao();
         String idCus = request.getParameter("variable");
 
         if(id != null) {
@@ -41,6 +41,7 @@ public class RegisterOrderController extends HttpServlet {
             InformationDeliverModel info = daoInFo.getById(idInt);
             daoInFo.updateToken(idInt,FeeGHNUtils.registerShipForDeliver(info.getX()+"", info.getY()+"", info.getZ()+"", info.getW()+"",1463,21808,info.getDistrictTo(), info.getWarTo()));
             iBillManagementService.confirmBill(id);
+            cartDao.updateCart(idInt, 2);
             Log log = new Log(Log.ALER,ip,"Đăng kí đơn hàng",cus.getIdUser(),"Đăng kí đơn hàng vận chuyển: " + id,1);
             log.insert();
             request.setAttribute("message", "Đăng kí đơn hàng thành công: " + id);

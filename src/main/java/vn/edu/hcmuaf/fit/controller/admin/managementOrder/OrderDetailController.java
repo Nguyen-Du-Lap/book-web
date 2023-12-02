@@ -24,7 +24,9 @@ public class OrderDetailController extends HttpServlet {
         String id = request.getParameter("id");
         int idInt = Integer.parseInt(id);
         CartModel cartModel = cartDao.getCartById(idInt);
-        System.out.println(billDAO.find1BillByIdCart(cartModel.getId()).toString());
+        System.out.println("CUSTOMER: "+ customerDAO.findById(cartModel.getIdUser()));
+        System.out.println("cart: "+ listDonHang(idInt));
+        System.out.println("LISTBILL: "+  cartDao.getAllDetailCart(cartModel.getIdUser(),idInt));
         request.setAttribute("CUSTOMER", customerDAO.findById(cartModel.getIdUser())) ;
         request.setAttribute("cart", listDonHang(idInt));
         request.setAttribute("LISTBILL",  cartDao.getAllDetailCart(cartModel.getIdUser(),idInt));
@@ -38,7 +40,10 @@ public class OrderDetailController extends HttpServlet {
     public CartModel listDonHang( int id) {
         CartDao cartDao = new CartDao();
         CartModel listModel = cartDao.getCartById(id);
-        listModel.setBills(new BillDAO().findAllBillByIdCart( listModel.getId()));
+
+        System.out.println("CartModel: "+listModel);
+        System.out.println("findAllBill: "+ new BillDAO().findAllBillByIdCart(id));
+        listModel.setBills(new BillDAO().findAllBillByIdCart(id));
 
 
         return listModel;
