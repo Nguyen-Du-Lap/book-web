@@ -98,6 +98,15 @@ public class CartModel implements Serializable {
         return  totalPrice;
     }
 
+    public String getInFoShipString() {
+        switch (inShip) {
+            case 1: return "Chờ xử lý";
+            case 2: return "Đang vận chuyển";
+            case 3: return "Đã hoàn thành";
+            default: return "Đã hủy";
+        }
+    }
+
     public double getTotalPriceShip() {
         return getTotalPrice() + ship;
     }
@@ -199,5 +208,24 @@ public class CartModel implements Serializable {
 
     public void setBills(List<Bill> bills) {
         this.bills = bills;
+    }
+
+    @Override
+    public String toString() {
+        return "CartModel{" +
+                "map=" + map +
+                ", id=" + id +
+                ", count=" + count +
+                ", totalPrice=" + totalPrice +
+                ", voucher=" + voucher +
+                ", ship=" + ship +
+                ", totalPriceShip=" + totalPriceShip +
+                ", totalPriceShipVoucher=" + totalPriceShipVoucher +
+                ", timeShip='" + timeShip + '\'' +
+                ", idUser=" + idUser +
+                ", inShip=" + inShip +
+                ", createTime=" + createTime +
+                ", bills=" + bills +
+                '}';
     }
 }
