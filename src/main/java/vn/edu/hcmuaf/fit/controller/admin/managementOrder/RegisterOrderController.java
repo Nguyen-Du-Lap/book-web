@@ -37,6 +37,7 @@ public class RegisterOrderController extends HttpServlet {
         if(id != null) {
             int idInt = Integer.parseInt(id);
             int idCusInt = Integer.parseInt(idCus);
+
             InformationDeliverDao daoInFo = new InformationDeliverDao();
             InformationDeliverModel info = daoInFo.getById(idInt);
             daoInFo.updateToken(idInt,FeeGHNUtils.registerShipForDeliver(info.getX()+"", info.getY()+"", info.getZ()+"", info.getW()+"",1463,21808,info.getDistrictTo(), info.getWarTo()));
