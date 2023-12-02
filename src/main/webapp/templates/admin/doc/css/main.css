@@ -54,7 +54,9 @@ html {
 @-ms-viewport {
   width: device-width;
 }
-
+.pad-69 {
+  padding-top: 69px!important;
+}
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block;
 }
@@ -8031,10 +8033,12 @@ button.bg-dark:focus {
 }
 
 .mb-4,
-.my-4 {
-  margin-bottom: 1.5rem !important;
+.mb-4, .my-4 {
+  margin-bottom: 0.5rem!important;
 }
-
+.green{
+  color: rgba(69, 116, 67, 0.87);
+}
 .ml-4,
 .mx-4 {
   margin-left: 1.5rem !important;
