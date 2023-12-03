@@ -5,8 +5,12 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import vn.edu.hcmuaf.fit.model.CustomerModel;
 import vn.edu.hcmuaf.fit.model.EmailModel;
+import javax.activation.DataHandler;
 
-
+import javax.mail.internet.*;
+import java.util.Properties;
+import javax.mail.util.ByteArrayDataSource;
+import javax.servlet.ServletOutputStream;
 import java.util.Properties;
 import java.util.Random;
 
@@ -91,10 +95,10 @@ public class EmailUtil {
     /**
      *
      * @param toEmail
-     * @param order
+     * @param billOrder
      * @return
      */
-    public boolean sendEmailOrder( String toEmail, String order) {
+    public boolean sendEmailOrder( String toEmail, String billOrder) {
         boolean test = false;
 
         String fromEmail = "lapnguyen37651@gmail.com";
@@ -125,7 +129,7 @@ public class EmailUtil {
             mess.setSubject("User Email Verification");
 
             //set message text
-            mess.setText("Notification about orders: "+"\n"+ "Your order has been canceled due to incorrect information with the original information" + "\n" + order +"\n" +"from : " +fromEmail);
+            mess.setText("Notification about orders: "+"\n"+ "Your order has been canceled due to incorrect information with the original information" + "\n"+"Information at :" + billOrder+"\n" +"from : " +fromEmail);
             //send the message
             Transport.send(mess);
             test=true;
@@ -136,6 +140,9 @@ public class EmailUtil {
 
         return test;
     }
+
+
+
     public boolean sendNewEmail( String toEmail, String private_key) {
         boolean test = false;
 
