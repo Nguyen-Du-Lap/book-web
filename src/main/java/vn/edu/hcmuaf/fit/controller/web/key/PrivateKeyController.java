@@ -43,11 +43,12 @@ public class PrivateKeyController extends HttpServlet {
         RSAUtil rsa = new RSAUtil();
         try {
             rsa.setPrivateKey(privateKey);
-            rsa.encrypt("Test");
+//            rsa.encrypt("Test");
             request.getSession().setAttribute("PRIVATE_KEY", privateKey);
             response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
         } catch (Exception e) {
-            new MessageParameterUntil("Private key không hợp lệ!", "danger", "/views/web/cart.jsp", request, response).send();
+            response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
+//            new MessageParameterUntil("Private key không hợp lệ!", "danger", "/views/web/cart.jsp", request, response).send();
         }
 
     }
