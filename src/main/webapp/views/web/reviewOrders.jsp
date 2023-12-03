@@ -94,6 +94,10 @@
               <a id="reviewOrders" title="Xem lại đơn hàng" href="${pageContext.request.contextPath}/account?action=reviewOrders">Xem
                 lại đơn hàng</a></li>
             <li class="first">
+              <a id="changePrivateKey" title="Đổi Private Key"  href="${pageContext.request.contextPath}/account?action=changePrivateKey">Đổi
+                Private Key</a>
+            </li>
+            <li class="first">
               <a id="logout" title="Đăng xuất" href="${pageContext.request.contextPath}/logout?action=logout">Đăng xuất</a>
             </li>
           </ul>

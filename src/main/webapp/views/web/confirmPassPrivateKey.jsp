@@ -27,7 +27,7 @@
     <form action="${pageContext.request.contextPath}/confirmPassKey" class="form_signUp" id="form_signUp" method="post">
         <div class="input ">
             <label>Nhập mật khẩu để xác thực tài khoản</label>
-            <input type="text" placeholder="Nhập mật khẩu" id="email" name="password">
+            <input type="password" placeholder="Nhập mật khẩu" id="email" name="password">
             <c:if test="${not empty message}">
                 <div class="alert alert-${alert}" role="alert">
                         ${message}
