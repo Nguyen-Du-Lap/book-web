@@ -1,7 +1,5 @@
 package vn.edu.hcmuaf.fit.bean;
 
-
-import org.jdbi.v3.core.Jdbi;
 import vn.edu.hcmuaf.fit.db.JDBCConnector;
 
 import java.io.Serializable;
