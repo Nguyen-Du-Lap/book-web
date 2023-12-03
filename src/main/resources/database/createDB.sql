@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `bill` (
   CONSTRAINT `bil_ibfk_3` FOREIGN KEY (`idCart`) REFERENCES `carts` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
--- Dumping data for table web_ban_sach.bill: ~0 rows (approximately)
+-- Dumping data for table web_ban_sach.bill: ~2 rows (approximately)
 INSERT INTO `bill` (`id_order`, `id_user`, `id_book`, `idCart`, `shipping_info`, `id_discount`, `address`, `pack`, `payment_method`, `totalBill`, `quantity`, `phone`, `info`, `create_order_time`, `ship_time`, `receive_time`) VALUES
 	(105, 38, 19, 28, 1, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Sơn Tình, Huyện Cẩm Khê, Tỉnh Phú Thọ', 0, 0, 167199, 1, '0867415853', '', '2023-11-29 11:58:07', NULL, NULL),
 	(106, 38, 14, 28, 1, NULL, 'Thôn 13 Xã Quảng Ngạn Huyện Quảng Điền Tỉnh Thừa Thiên Huế, Xã Sơn Tình, Huyện Cẩm Khê, Tỉnh Phú Thọ', 0, 0, 167199, 2, '0867415853', '', '2023-11-29 11:58:07', NULL, NULL);
@@ -282,14 +282,15 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `totalPrice` int(11) unsigned DEFAULT 0,
   `infoShip` int(11) DEFAULT 0,
   `create_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `verify` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `carts_ibfk_1` (`idUser`),
   CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `customer` (`id_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
 
 -- Dumping data for table web_ban_sach.carts: ~0 rows (approximately)
-INSERT INTO `carts` (`id`, `idUser`, `timeShip`, `feeShip`, `totalPrice`, `infoShip`, `create_time`) VALUES
-	(28, 38, '2023/12/04 - 2023/12/07', 0, 167199, 1, '2023-11-29 11:58:07');
+INSERT INTO `carts` (`id`, `idUser`, `timeShip`, `feeShip`, `totalPrice`, `infoShip`, `create_time`, `verify`) VALUES
+	(28, 38, '2023/12/04 - 2023/12/07', 0, 167199, 1, '2023-11-29 11:58:07', NULL);
 
 -- Dumping structure for table web_ban_sach.catalog
 CREATE TABLE IF NOT EXISTS `catalog` (
@@ -551,7 +552,7 @@ CREATE TABLE IF NOT EXISTS `infomationdelivers` (
   CONSTRAINT `infomationdelivers_ibfk_1` FOREIGN KEY (`idCart`) REFERENCES `carts` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table web_ban_sach.infomationdelivers: ~0 rows (approximately)
+-- Dumping data for table web_ban_sach.infomationdelivers: ~1 rows (approximately)
 INSERT INTO `infomationdelivers` (`id`, `idCart`, `x`, `y`, `z`, `w`, `districtTo`, `warTo`, `token`) VALUES
 	(19, 28, 20, 13, 2, 448, 'Huyện Cẩm Khê', 'Xã Sơn Tình', NULL);
 
@@ -568,7 +569,7 @@ CREATE TABLE IF NOT EXISTS `logs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table web_ban_sach.logs: ~120 rows (approximately)
+-- Dumping data for table web_ban_sach.logs: ~121 rows (approximately)
 INSERT INTO `logs` (`id`, `level`, `user`, `ip`, `src`, `content`, `createAt`, `status`) VALUES
 	(1, 0, 0, '192.168.186.1', 'Register', 'User register suscess', '2023-04-19 16:10:38', 1),
 	(2, 0, 38, '192.168.186.1', 'Login', 'Login fall', '2023-04-19 16:10:51', 1),
@@ -722,6 +723,21 @@ CREATE TABLE IF NOT EXISTS `owner` (
 -- Dumping data for table web_ban_sach.owner: ~0 rows (approximately)
 INSERT INTO `owner` (`id_company`, `name_website`, `name_company`, `time_start_proprietary`, `time_finish_proprietary`, `information_company`) VALUES
 	(1, 'DORAEMON', 'Doraemon', '2022-11-11 20:41:21', NULL, 'Doraemon gồm 3 thành viên.');
+
+-- Dumping structure for table web_ban_sach.public_key
+CREATE TABLE IF NOT EXISTS `public_key` (
+  `id_key` int(11) NOT NULL AUTO_INCREMENT,
+  `id_user` int(11) NOT NULL,
+  `public_Key` text DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `create_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `expire` date DEFAULT NULL,
+  PRIMARY KEY (`id_key`),
+  KEY `id_user` (`id_user`),
+  CONSTRAINT `public_key_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `customer` (`id_user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Dumping data for table web_ban_sach.public_key: ~0 rows (approximately)
 
 -- Dumping structure for table web_ban_sach.publisher
 CREATE TABLE IF NOT EXISTS `publisher` (

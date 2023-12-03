@@ -8,7 +8,7 @@ public class JDBCConnector {
     public static Connection getConnection(){
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://"+DBProperties.getDbHost()+":"+DBProperties.getDbPort()+"/"+DBProperties.getDbName();
+            String url = "jdbc:mysql://"+DBProperties.getDbHost()+":"+DBProperties.getDbPort()+"/"+DBProperties.getDbName()+"?useUnicode=true&characterEncoding=UTF-8";
             String user = DBProperties.getUsername();
             String password = DBProperties.getPassword();
             return DriverManager.getConnection(url, user, password);

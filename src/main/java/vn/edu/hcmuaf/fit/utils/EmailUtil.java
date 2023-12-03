@@ -87,6 +87,55 @@ public class EmailUtil {
 
         return test;
     }
+
+    /**
+     *
+     * @param toEmail
+     * @param order
+     * @return
+     */
+    public boolean sendEmailOrder( String toEmail, String order) {
+        boolean test = false;
+
+        String fromEmail = "lapnguyen37651@gmail.com";
+        String password = "pgvh dkgh nejm jeix";
+
+        try {
+            Properties pr = new Properties();
+            pr.put("mail.smtp.host", "smtp.gmail.com");
+            pr.put("mail.smtp.port", "587");
+            pr.put("mail.smtp.auth", "true");
+            pr.put("mail.smtp.starttls.enable", "true");
+            Session session = Session.getInstance(pr, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(fromEmail, password);
+                }
+            });
+
+            //set email message details
+            Message mess = new MimeMessage(session);
+
+            //set from email address
+            mess.setFrom(new InternetAddress(fromEmail));
+            //set to email address or destination email address
+            mess.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+
+            //set email subject
+            mess.setSubject("User Email Verification");
+
+            //set message text
+            mess.setText("Notification about orders: "+"\n"+ "Your order has been canceled due to incorrect information with the original information" + "\n" + order +"\n" +"from : " +fromEmail);
+            //send the message
+            Transport.send(mess);
+            test=true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return test;
+    }
     public boolean sendNewEmail( String toEmail, String private_key) {
         boolean test = false;
 

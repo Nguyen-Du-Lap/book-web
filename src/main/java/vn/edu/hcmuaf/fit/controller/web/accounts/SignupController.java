@@ -47,6 +47,7 @@ public class SignupController extends HttpServlet {
             // Convert the keys to string format
             privateKeyStr = keyToString(privateKey_khoa);
             publicKeyStr  = keyToString(publicKey_khoa);
+            System.out.println(privateKeyStr );
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -104,5 +105,9 @@ public class SignupController extends HttpServlet {
             }
 
         }
+
+    public static void main(String[] args) {
+        create_key();
+    }
     }
 

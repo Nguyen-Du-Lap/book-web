@@ -160,7 +160,7 @@
                                     <c:forEach var="item" items="${LISTBILL}">
                                         <tr>
                                             <td>${item.nameSach}</td>
-                                            <td><img style="height: 50px" src="${item.image}"></td>
+                                            <td><img style="height: 50px" src="${pageContext.request.contextPath}/${item.image}"></td>
                                             <td>${item.quantity}</td>
                                             <td>${item.totalPrice}</td>
                                         </tr>
