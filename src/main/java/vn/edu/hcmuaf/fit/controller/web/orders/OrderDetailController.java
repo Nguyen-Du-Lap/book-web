@@ -39,11 +39,7 @@ public class OrderDetailController extends HttpServlet {
         String id = request.getParameter("id");
         int idInt = Integer.parseInt(id);
         int idUser = cus.getIdUser();
-        System.out.println(idUser);
-        String publicKey= cartDao.getPuclickey(idInt, idUser);
-        String verfy =cartDao.getHash(idInt, idUser);
-        String  order = objectVerifyUtil.string(idUser, idInt);
-        String hash1 = sha256Util.check(order);
+
 
 
         List<CartDetailModel> cartDaos =cartDao.getAllDetailCart(idUser,idInt);
@@ -62,9 +58,8 @@ public class OrderDetailController extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
         CustomerModel cus = (CustomerModel) SessionUtil.getInstance().getValue(request ,"USERMODEL");
         String id = request.getParameter("id");
-        boolean result =false;
         int idInt = Integer.parseInt(id);
-        System.out.println(idInt);
+
         int idUser = cus.getIdUser();
 
         String publicKey= cartDao.getPuclickey(idInt, idUser);
