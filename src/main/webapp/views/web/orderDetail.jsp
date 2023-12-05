@@ -43,8 +43,9 @@
 
     <div class="container" style="min-height: 600px">
       <div>  <h1 class="text-center  my-4" style="padding-top: 69px;">Chi tiết đơn hàng</h1> <label class="green" style="
-    color: green;">${successMessage}</label></div>
-        <form action="${pageContext.request.contextPath}/orderDetail?id=${id}" method="post" accept-charset="UTF-8">
+    color: green;">${successMessage}</label><label class="red" style="
+    color: red;">${nosuccessMessage}</label></div>
+        <form action="" method="post" accept-charset="UTF-8">
 
             <div class="row">
                 <div class="col-md-6">
@@ -125,7 +126,6 @@
                         </tbody>
 
                     </table>
-
 
                     <div   class="parent-button"><button  class="centered-button" >check</button></div>
 

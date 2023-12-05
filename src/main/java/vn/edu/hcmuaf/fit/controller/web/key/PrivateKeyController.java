@@ -39,7 +39,7 @@ public class PrivateKeyController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String privateKey = request.getParameter("privateKey");
+        String privateKey = request.getParameter("privateKey").trim();
         RSAUtil rsa = new RSAUtil();
         try {
             rsa.setPrivateKey(privateKey);

@@ -22,7 +22,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </head>
-
+<style>
+    .parent-button{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .centered-button {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+</style>
 <body onload="time()" class="app sidebar-mini rtl">
 <!-- Navbar-->
 <%@include file="/common/admin/header.jsp"%>
@@ -58,121 +76,139 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12">
-            <div class="tile">
-                <div class="tile-body">
-                    <div class="container" style="min-height: 600px">
-                        <h1 class="text-center my-4">Chi tiết đơn hàng</h1>
-                        <c:if test="${not empty message}">
-                            <div class="alert alert-${alert}" role="alert">
-                                    ${message}
-                            </div>
-                        </c:if>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h2>Thông tin khách hàng</h2>
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <td>Tên khách hàng:</td>
-                                        <td>${CUSTOMER.firstName} ${CUSTOMER.lastName}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Địa chỉ:</td>
-                                        <td>${cart.bills.get(0).address}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số điện thoại:</td>
-                                        <td>${cart.bills.get(0).phone}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Email:</td>
-                                        <td>${CUSTOMER.email}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <h2>Thông tin đơn hàng</h2>
-                                <table class="table">
-                                    <tbody>
-                                    <tr>
-                                        <td>Mã đơn hàng:</td>
-                                        <td>${cart.id}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ngày đặt hàng:</td>
-                                        <td>${cart.createTime}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ngày dự kiến giao đến:</td>
-                                        <td>${cart.timeShip}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Đóng gói:</td>
-                                        <td>${cart.bills.get(0).pack}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Phương thức thanh toán:</td>
-                                        <td>${cart.bills.get(0).paymentMethod}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ghi chú:</td>
-                                        <td>${cart.bills.get(0).info}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tổng giá trị:</td>
-                                        <td>${cart.getTotalPriceFromCart()} VNĐ
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tình trạng:</td>
-                                        <td>${cart.getInFoShipString()}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Đăng kí giao hàng:</td>
-                                        <c:if test="${cart.getInFoShipString() == 'Chờ xử lý'}">
-                                            <td><button type="button" class="btn btn-danger">
-                                                <a style="color: #FFFFFF" href="${pageContext.request.contextPath}/admin-register-order?id=${cart.id}&variable=${CUSTOMER.idUser}">Đăng kí đơn hàng</a>
-                                            </button></td>
-                                        </c:if>
-                                        <c:if test="${cart.getInFoShipString() != 'Chờ xử lý'}">
-                                            <td>Đã đăng kí vận chuyển</td>
-                                        </c:if>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h2>Danh sách sản phẩm</h2>
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Tên sản phẩm</th>
-                                        <th scope="col">Ảnh</th>
-                                        <th scope="col">Số lượng</th>
-                                        <th scope="col">Tổng tiền</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <c:forEach var="item" items="${LISTBILL}">
-                                        <tr>
-                                            <td>${item.nameSach}</td>
-                                            <td><img style="height: 50px" src="${pageContext.request.contextPath}/${item.image}"></td>
-                                            <td>${item.quantity}</td>
-                                            <td>${item.totalPrice}</td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <form action="${pageContext.request.contextPath}/admin-order-detail?id=${id}" method="post">
+          <div class="col-md-12">
+              <div class="tile">
+                  <div class="tile-body">
+                      <div class="container" style="min-height: 600px">
+                         <div> <h1 class="text-center my-4">Chi tiết đơn hàng</h1><label class="green" style="
+          color: green;">${successMessage}</label></label><label class="red" style="
+    color: red;">${nosuccessMessage}</label></div>
+                          <c:if test="${not empty message}">
+                              <div class="alert alert-${alert}" role="alert">
+                                      ${message}
+                              </div>
+                          </c:if>
+                          <div class="row">
+                              <div class="col-md-6">
+                                  <h2>Thông tin khách hàng</h2>
+                                  <table class="table">
+                                      <tbody>
+                                      <tr>
+                                          <td>Tên khách hàng:</td>
+                                          <td>${CUSTOMER.firstName} ${CUSTOMER.lastName}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Địa chỉ:</td>
+                                          <td>${cart.bills.get(0).address}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Số điện thoại:</td>
+                                          <td>${cart.bills.get(0).phone}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Email:</td>
+                                          <td>${CUSTOMER.email}</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                              <div class="col-md-6">
+                                  <h2>Thông tin đơn hàng</h2>
+                                  <table class="table">
+                                      <tbody>
+                                      <tr>
+                                          <td>Mã đơn hàng:</td>
+                                          <td>${cart.id}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Ngày đặt hàng:</td>
+                                          <td>${cart.createTime}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Ngày dự kiến giao đến:</td>
+                                          <td>${cart.timeShip}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Đóng gói:</td>
+                                          <td>${cart.bills.get(0).pack}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Phương thức thanh toán:</td>
+                                          <td>${cart.bills.get(0).paymentMethod}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Ghi chú:</td>
+                                          <td>${cart.bills.get(0).info}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Tổng giá trị:</td>
+                                          <td>${cart.getTotalPriceFromCart()} VNĐ
+                                          </td>
+                                      </tr>
+                                      <tr>
+                                          <td>Tình trạng:</td>
+                                          <td>${cart.getInFoShipString()}</td>
+                                      </tr>
+                                      <tr>
+                                          <td>Đăng kí giao hàng:</td>
+                                          <c:if test="${cart.getInFoShipString() == 'Chờ xử lý'}">
+                                              <td><button type="button" class="btn btn-danger">
+                                                  <a style="color: #FFFFFF" href="${pageContext.request.contextPath}/admin-register-order?id=${cart.id}&variable=${CUSTOMER.idUser}">Đăng kí đơn hàng</a>
+                                              </button></td>
+                                          </c:if>
+                                          <c:if test="${cart.getInFoShipString() != 'Chờ xử lý'}">
+                                              <td>Đã đăng kí vận chuyển</td>
+                                          </c:if>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </div>
+                          <div class="row">
+                              <div class="col-md-12">
+                                  <h2>Danh sách sản phẩm</h2>
+                                  <table class="table">
+                                      <thead>
+                                      <tr>
+                                          <th scope="col">Tên sản phẩm</th>
+                                          <th scope="col">Ảnh</th>
+                                          <th scope="col">Số lượng</th>
+                                          <th scope="col">Tổng tiền</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <c:forEach var="item" items="${LISTBILL}">
+                                          <tr>
+                                              <td>${item.nameSach}</td>
+                                              <td><img style="height: 50px" src="${pageContext.request.contextPath}/${item.image}"></td>
+                                              <td>${item.quantity}</td>
+                                              <td>${item.totalPrice}</td>
+                                          </tr>
+                                      </c:forEach>
+                                      </tbody>
+                                  </table>
+                           <c:forEach var="cart" items="${listBill}">
+
+                             <c:if test="${cart.inShip == 1}">
+                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                             </c:if>
+                             <c:if test="${cart.inShip == 2}">
+                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                             </c:if>
+                             <c:if test="${cart.inShip == 3}">
+                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                             </c:if>
+                         </c:forEach>
+
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+      </form>
     </div>
 </main>
 

@@ -10,8 +10,12 @@ public class ObjectVerifyUtil {
     CartDao cartDao = new CartDao();
 
     public String string(int idUser, int idCart) {
-        String s1 = String.valueOf(cartDao.getAllByIdUserAndIdCart(idUser, idCart));
+        OrderReviewDetail o1 = cartDao.getAllByIdUserAndIdCartNoTimeship(idUser, idCart);
+
+        String s1 = String.valueOf(o1);
+
         String s2 = String.valueOf(cartDao.getAllDetailCart(idUser, idCart));
+        System.out.println (s1 + s2);
         return s1 + s2;
     }
 
