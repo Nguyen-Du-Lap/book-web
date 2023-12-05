@@ -82,7 +82,8 @@
                   <div class="tile-body">
                       <div class="container" style="min-height: 600px">
                          <div> <h1 class="text-center my-4">Chi tiết đơn hàng</h1><label class="green" style="
-    color: green;">${successMessage}</label></div>
+          color: green;">${successMessage}</label></label><label class="red" style="
+    color: red;">${nosuccessMessage}</label></div>
                           <c:if test="${not empty message}">
                               <div class="alert alert-${alert}" role="alert">
                                       ${message}
@@ -187,7 +188,19 @@
                                       </c:forEach>
                                       </tbody>
                                   </table>
-                                  <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                           <c:forEach var="cart" items="${listBill}">
+
+                             <c:if test="${cart.inShip == 1}">
+                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                             </c:if>
+                             <c:if test="${cart.inShip == 2}">
+                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                             </c:if>
+                             <c:if test="${cart.inShip == 3}">
+                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                             </c:if>
+                         </c:forEach>
+
                               </div>
                           </div>
                       </div>

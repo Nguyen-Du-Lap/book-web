@@ -53,11 +53,12 @@ public class OrderDetailController extends HttpServlet {
         request.setAttribute("id", idInt);
         int idUser =cartModel.getIdUser();
         // lay public key
-        String publicKey= cartDao.getPuclickey(idInt, idUser);
+        String publicKey= cartDao.getPuclickey( idUser ,idInt);
         // lay chuoi ma hoa
         String verfy =cartDao.getHash(idInt, idUser);
         // lay don hang
         String  order = objectVerifyUtil.string(idUser, idInt);
+        System.out.println(order);
         // bam don hang
         String hash1 = sha256Util.check(order);
         try {
@@ -65,9 +66,13 @@ public class OrderDetailController extends HttpServlet {
             String hash2 = rsa.decrypt(verfy);
             if(hash1.equals(hash2)){
                 request.setAttribute("successMessage", "Verification successful!");
+            }else{
+                if(!hash1.equals(hash2)){
+                    request.setAttribute("nosuccessMessage", "The order information is wrong, do you want to cancel the order?  yes" );
+                }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            request.setAttribute("nosuccessMessage", "Verification no successful!");
         }
 
         request.setAttribute("CUSTOMER", customerDAO.findById(cartModel.getIdUser())) ;

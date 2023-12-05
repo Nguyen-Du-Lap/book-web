@@ -17,6 +17,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.io.SyncFailedException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -96,6 +97,9 @@ public class OrderPayController extends HttpServlet {
         String hash1 = sha256.check(stringObject);
 
         String privateKey = (String) request.getSession().getAttribute("PRIVATE_KEY");
+        System.out.println( privateKey);
+
+        System.out.println( privateKey);
         int isVerify = 0;
         try {
             // set khóa privateKey đã mã hóa
