@@ -47,6 +47,7 @@ public class PrivateKeyController extends HttpServlet {
             request.getSession().setAttribute("PRIVATE_KEY", privateKey);
             response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
         } catch (Exception e) {
+            request.getSession().setAttribute("PRIVATE_KEY", privateKey);
             response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
 //            new MessageParameterUntil("Private key không hợp lệ!", "danger", "/views/web/cart.jsp", request, response).send();
         }
