@@ -152,45 +152,91 @@ public class CartDao {
      * @param idCart
      * @return
      */
-    public OrderReviewDetail getAllByIdUserAndIdCartNoTimeship(int id, int idCart) {
-        OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
-        String sql = "SELECT  CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, b.create_order_time, e.timeShip, e.totalPrice\n" +
-                " FROM bill b JOIN carts e ON b.idCart = e.id JOIN customer t ON e.idUser = t.id_user WHERE t.id_user = ? and b.idCart =?";
-        Connection connection = JDBCConnector.getConnection();
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        if(connection != null) {
-            try {
-                statement = connection.prepareStatement(sql);
-                statement.setInt(1, id);
-                statement.setInt(2, idCart);
-                resultSet = statement.executeQuery();
-                while (resultSet.next()) {
+//    public OrderReviewDetail getAllByIdUserAndIdCartNoTimeship(int id, int idCart) {
+//        OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
+//        String sql = "SELECT  CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, b.create_order_time, e.timeShip, e.totalPrice\n" +
+//                " FROM bill b JOIN carts e ON b.idCart = e.id JOIN customer t ON e.idUser = t.id_user WHERE t.id_user = ? and b.idCart =?";
+//        Connection connection = JDBCConnector.getConnection();
+//        PreparedStatement statement = null;
+//        ResultSet resultSet = null;
+//        if(connection != null) {
+//            try {
+//                statement = connection.prepareStatement(sql);
+//                statement.setInt(1, id);
+//                statement.setInt(2, idCart);
+//                resultSet = statement.executeQuery();
+//                while (resultSet.next()) {
+//
+//                    orderReviewDetail.setFullName(resultSet.getString(1));
+//                    orderReviewDetail.setAddress(resultSet.getString(2));
+//                    orderReviewDetail.setPhone(resultSet.getString(3));
+//                    orderReviewDetail.setEmail(resultSet.getString(4));
+//                    orderReviewDetail.setIdcart(resultSet.getInt(5));
+//                    orderReviewDetail.setCreate_order_time(resultSet.getString(6));
+//                    orderReviewDetail.setTimeShip(resultSet.getString(7));
+//                    orderReviewDetail.setTotolPrice(resultSet.getInt(8));
+//
+//                }
+//
+//                return orderReviewDetail;
+//            } catch (SQLException e) {
+//                return null;
+//            } finally {
+//                try {
+//                    if(connection != null) connection.close();
+//                    if(statement != null) statement.close();
+//                    if(resultSet != null) resultSet.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return null;
+//
+//    }
 
-                    orderReviewDetail.setFullName(resultSet.getString(1));
-                    orderReviewDetail.setAddress(resultSet.getString(2));
-                    orderReviewDetail.setPhone(resultSet.getString(3));
-                    orderReviewDetail.setEmail(resultSet.getString(4));
-                    orderReviewDetail.setIdcart(resultSet.getInt(5));
-                    orderReviewDetail.setCreate_order_time(resultSet.getString(6));
-                    orderReviewDetail.setTimeShip(resultSet.getString(7));
-                    orderReviewDetail.setTotolPrice(resultSet.getInt(8));
+    /**
+     * khong lay thoi gian
+     * @param id
+     * @param idCart
+     * @return
+     */
+    public OrderReviewDetail getAllByIdUserAndIdCartNoTime(int id, int idCart) {
+        String sql = "SELECT CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, "
+                + "b.create_order_time, e.timeShip, e.totalPrice "
+                + "FROM bill b "
+                + "JOIN carts e ON b.idCart = e.id "
+                + "JOIN customer t ON e.idUser = t.id_user "
+                + "WHERE t.id_user = ? AND b.idCart = ?";
 
-                }
+        try (Connection connection = JDBCConnector.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                return orderReviewDetail;
-            } catch (SQLException e) {
-                return null;
-            } finally {
-                try {
-                    if(connection != null) connection.close();
-                    if(statement != null) statement.close();
-                    if(resultSet != null) resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+            statement.setInt(1, id);
+            statement.setInt(2, idCart);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
+                    orderReviewDetail.setFullName(resultSet.getString("fullname"));
+                    orderReviewDetail.setAddress(resultSet.getString("address"));
+                    orderReviewDetail.setPhone(resultSet.getString("phone"));
+                    orderReviewDetail.setEmail(resultSet.getString("email"));
+                    orderReviewDetail.setIdcart(resultSet.getInt("idCart"));
+                    orderReviewDetail.setTimeShip(resultSet.getString("timeShip"));
+                    orderReviewDetail.setTotolPrice(resultSet.getInt("totalPrice"));
+                    return orderReviewDetail;
+                } else {
+                    // Handle case when no data is found. For example:
+                    // throw new NoDataFoundException("No order found for the given ID and Cart ID.");
                 }
             }
+        } catch (SQLException e) {
+            // Handle exception, log error, etc.
+            e.printStackTrace();
+            // You could log this error and/or throw a custom exception.
         }
+        // You can return a default object or throw an exception if you prefer.
         return null;
 
     }
@@ -417,7 +463,7 @@ public class CartDao {
      * @return
      */
     public String getPuclickey( int idUser,int idCart) {
-        String query = "CALL getSelectPublicKey(?, ?)";
+        String query = "CALL getSelectPublic_Key(?, ?)";
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -680,8 +726,9 @@ public class CartDao {
 
     public static void main(String[] args) {
         CartDao cartDao = new CartDao();
-        System.out.println( cartDao.getHash(32,49));
 
-        System.out.println(cartDao.getPuclickey(48,46));
+//        System.out.println(cartDao.getAllByIdUserAndIdCartNoTimeship(54,75));
+        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
+
     }
 }

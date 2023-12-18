@@ -53,7 +53,6 @@ public class UpdateOrderController extends HttpServlet {
             Log log = new Log(Log.INFO,ip,"Xác nhận đơn hàng",cus.getIdUser(),"Thay đổi trạng thái đơn hàng",1);
             log.insert();
             if(i >= 1) {
-
                 response.sendRedirect("/admin-table-order?message=Upload success&alert=success");
             }else {
                 response.sendRedirect("/admin-table-order?message=Upload success&alert=success");
