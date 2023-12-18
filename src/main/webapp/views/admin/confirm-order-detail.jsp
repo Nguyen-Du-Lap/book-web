@@ -188,19 +188,17 @@
                                       </c:forEach>
                                       </tbody>
                                   </table>
-                           <c:forEach var="cart" items="${listBill}">
 
-                             <c:if test="${cart.inShip == 1}">
+<%--nut button hien khi inship la 1 2 3--%>
+                             <c:if test="${cart.getInShip() == 1}">
                                  <div   class="parent-button"><button  class="centered-button" >check</button></div>
                              </c:if>
-                             <c:if test="${cart.inShip == 2}">
-                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
-                             </c:if>
-                             <c:if test="${cart.inShip == 3}">
-                                 <div   class="parent-button"><button  class="centered-button" >check</button></div>
-                             </c:if>
-                         </c:forEach>
-
+                                  <c:if test="${cart.getInShip() == 2}">
+                                      <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                                  </c:if>
+                                  <c:if test="${cart.getInShip() == 3}">
+                                      <div   class="parent-button"><button  class="centered-button" >check</button></div>
+                                  </c:if>
                               </div>
                           </div>
                       </div>
