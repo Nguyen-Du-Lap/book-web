@@ -10,15 +10,24 @@ public class ObjectVerifyUtil {
     CartDao cartDao = new CartDao();
 
     public String string(int idUser, int idCart) {
+ dev_thuan
         OrderReviewDetail o1 = cartDao.getAllByIdUserAndIdCart(idUser, idCart);
         String getTime = cartDao.getCreatime(idCart, idUser);
         System.out.println(getTime);
+
+        OrderReviewDetail o1 = cartDao.getAllByIdUserAndIdCartNoTime(idUser, idCart);
+
+
         String s1 = String.valueOf(o1);
         System.out.println( "s1"+s1);
 
         String s2 = String.valueOf(cartDao.getAllDetailCart(idUser, idCart));
         System.out.println("s2"+s2);
         return s1 + s2 +getTime;
+
+
+        return s1 + s2;
+ master
     }
 
     public String stringPrinlt(int idUser, int idCart) {

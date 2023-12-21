@@ -560,7 +560,7 @@ public class CartDao {
      * @return
      */
     public String getPuclickey( int idUser,int idCart) {
-        String query = "CALL getSelectPublicKey(?, ?)";
+        String query = "CALL getSelectPublic_Key(?, ?)";
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -825,7 +825,12 @@ public class CartDao {
         CartDao cartDao = new CartDao();
 
 //        System.out.println(cartDao.getAllByIdUserAndIdCartNoTimeship(54,75));
+
 //        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
         System.out.println(cartDao.getCreatime(30,48));
+
+        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
+
+
     }
 }
