@@ -34,7 +34,7 @@ public class OrderDetailController extends HttpServlet {
         int idInt = Integer.parseInt(id);
         System.out.println("id find"+  idInt);
         CartModel cartModel = cartDao.getCartById(idInt);
-  // lay id
+        // lay id
         request.setAttribute("id", idInt);
         request.setAttribute("CUSTOMER", customerDAO.findById(cartModel.getIdUser())) ;
         request.setAttribute("cart", listDonHang(idInt));
@@ -68,7 +68,9 @@ public class OrderDetailController extends HttpServlet {
                 request.setAttribute("successMessage", "Verification successful!");
             }else{
                 if(!hash1.equals(hash2)){
-                    request.setAttribute("nosuccessMessage", "The order information is wrong, do you want to cancel the order?  yes" );
+                    String link = "<a href=\"" + request.getContextPath() + "/admin-table-order\" style=\"color: #007FFF; text-decoration: none;\">Confirm</a>";
+                    cartDao.updateCart(idInt,4);
+                    request.setAttribute("nosuccessMessage", "The order information is wrong, do you want to cancel the order ? " +link );
                 }
             }
         } catch (Exception e) {

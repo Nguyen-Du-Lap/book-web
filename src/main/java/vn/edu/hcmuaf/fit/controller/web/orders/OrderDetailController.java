@@ -61,11 +61,11 @@ public class OrderDetailController extends HttpServlet {
         int idInt = Integer.parseInt(id);
 
         int idUser = cus.getIdUser();
-
         String publicKey= cartDao.getPuclickey( idUser ,idInt);
+
         String verfy =cartDao.getHash(idInt, idUser);
         String  order = objectVerifyUtil.string(idUser, idInt);
-        System.out.println(order);
+        System.out.println("don hang" + order);
         String hash1 = sha256Util.check(order);
          OrderReviewDetail o = cartDao.getAllByIdUserAndIdCart(idUser,idInt);
         List<CartDetailModel> cartDaos =cartDao.getAllDetailCart(idUser,idInt);
