@@ -62,7 +62,59 @@ public class CartDao {
         }
         return 1;
     }
-    public int insertCart(int idUser, String timeShip, double feeShip, double totalPrice, String infoShip) {
+    /** lấy ngày tạo đơn hàng
+     *
+     */
+    public String getCreatime( int idCart,int idUser) {
+        String sql = "SELECT create_time FROM `carts` WHERE id = ? and idUser = ?";
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String createTime = null;
+
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, idCart);
+            statement.setInt(2, idUser);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                createTime = resultSet.getString("create_time");
+            }
+        } catch (SQLException e) {
+            // Handle exceptions
+            e.printStackTrace();
+        } finally {
+            // Close resultSet, statement, and connection to avoid resource leaks
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return createTime;
+    }
+
+    /**
+     *
+     * @param idUser
+     * @param timeShip
+     * @param feeShip
+     * @param totalPrice
+     * @param infoShip
+     * @return
+     */
+    public int insert_Cart(int idUser, String timeShip, double feeShip, double totalPrice, String infoShip) {
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
@@ -70,7 +122,7 @@ public class CartDao {
 
         if (connection != null) {
             try {
-                String sql = "INSERT INTO carts( idUser, timeShip, feeShip, totalPrice, infoShip) VALUES ( ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO carts( idUser, timeShip, feeShip, totalPrice, infoShip , create_time) VALUES ( ?, ?, ?, ?, ?,current_timestamp())";
                 statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, idUser);
                 statement.setString(2, timeShip);
@@ -85,6 +137,7 @@ public class CartDao {
                 if (generatedKeys.next()) {
                     cartId = generatedKeys.getInt(1); // Lấy giá trị ID đã được tạo tự động
                     System.out.println("CartModel inserted successfully. Cart ID: " + cartId);
+
                 } else {
                     System.err.println("Failed to retrieve auto-generated cart ID.");
                 }
@@ -102,6 +155,50 @@ public class CartDao {
         }
         return cartId;
     }
+
+    /**
+     * sau khi mua hang hoa don duoc tao và cap nhap thoi gian hoa don bill tạo
+     * @param id
+     */
+    public void update_cart_to_bill(int id) {
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+
+        if (connection != null) {
+            try {
+                // Lấy thời gian hiện tại trước khi cập nhật
+                long timeBeforeUpdate = System.currentTimeMillis();
+
+                String sql ="UPDATE bill SET create_order_time = CURRENT_TIMESTAMP WHERE idCart = ?";
+                statement = connection.prepareStatement(sql);
+                statement.setInt(1, id);
+
+                int rowsAffected = statement.executeUpdate();
+
+                // Lấy thời gian hiện tại sau khi cập nhật
+                long timeAfterUpdate = System.currentTimeMillis();
+
+                if (rowsAffected > 0) {
+                    System.out.println("CartModel update successfully.");
+                    System.out.println("Time before update: " + new Timestamp(timeBeforeUpdate));
+                    System.out.println("Time after update: " + new Timestamp(timeAfterUpdate));
+                } else {
+                    System.out.println("No rows updated. Check if the idCart value is correct and exists in the database.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Update failed with error: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (statement != null) statement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public OrderReviewDetail getAllByIdUserAndIdCart(int id, int idCart) {
         OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
         String sql = "SELECT  CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, b.create_order_time, e.timeShip, e.totalPrice, b.shipping_info\n" +
@@ -263,12 +360,12 @@ public class CartDao {
                 resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     CartDetailModel cartDetailModel = new CartDetailModel();
-                   cartDetailModel.setId(resultSet.getInt(1));
-                   cartDetailModel.setNameSach(resultSet.getString(2));
-                   cartDetailModel.setQuantity(resultSet.getInt(3));
-                   cartDetailModel.setImage(resultSet.getString(4));
-                   cartDetailModel.setTotalPrice(resultSet.getInt(5));
-                   result.add(cartDetailModel);
+                    cartDetailModel.setId(resultSet.getInt(1));
+                    cartDetailModel.setNameSach(resultSet.getString(2));
+                    cartDetailModel.setQuantity(resultSet.getInt(3));
+                    cartDetailModel.setImage(resultSet.getString(4));
+                    cartDetailModel.setTotalPrice(resultSet.getInt(5));
+                    result.add(cartDetailModel);
 
                 }
 
@@ -463,7 +560,7 @@ public class CartDao {
      * @return
      */
     public String getPuclickey( int idUser,int idCart) {
-        String query = "CALL getSelectPublic_Key(?, ?)";
+        String query = "CALL getSelectPublicKey(?, ?)";
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -607,7 +704,7 @@ public class CartDao {
                 statement.setInt(1, idCart);
                 resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                   result = resultSet.getDouble(1);
+                    result = resultSet.getDouble(1);
                 }
 
                 return result;
@@ -728,7 +825,7 @@ public class CartDao {
         CartDao cartDao = new CartDao();
 
 //        System.out.println(cartDao.getAllByIdUserAndIdCartNoTimeship(54,75));
-        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
-
+//        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
+        System.out.println(cartDao.getCreatime(30,48));
     }
 }

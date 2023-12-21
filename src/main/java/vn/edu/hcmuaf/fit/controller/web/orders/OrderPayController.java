@@ -42,9 +42,11 @@ public class OrderPayController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         response.setContentType("text/html; charset=UTF-8");
         InetAddress myIP=InetAddress.getLocalHost();
         String ip= myIP.getHostAddress();
+
         request.setCharacterEncoding("UTF-8");
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
@@ -73,13 +75,14 @@ public class OrderPayController extends HttpServlet {
             listIdRemove.add(item.getProduct().getIdBook());
         }
 
-        int idCart = cartDao.insertCart( cart.getIdUser(),cart.getTimeShip(),cart.getShip(), cart.getTotalPriceShipVoucher(),"1" );
+        int idCart = cartDao.insert_Cart( cart.getIdUser(),cart.getTimeShip(),cart.getShip(), cart.getTotalPriceShipVoucher(),"1" );
 
-
+        System.out.println("cart id" +idCart);
         // lấy thông tin từ session ra
         HttpSession httpSession = request.getSession();
         InformationDeliverModel informationDeliverModel = (InformationDeliverModel) httpSession.getAttribute("deliver");
         informationDeliverModel.setIdCart(idCart);
+
 
         // lưu informationDeliver vào DB
         informationDeliverDao.insertInfomationDeliver(informationDeliverModel);
@@ -90,7 +93,7 @@ public class OrderPayController extends HttpServlet {
                     address, city, district, ward, packInt, payInt,
                     cartItem.getQuantity(), cart.getTotalPriceShipVoucher(), info, phone, idCart ,request, response);
         }
-
+        cartDao.update_cart_to_bill(idCart);
         // add cột verify
         int idUser = cus.getIdUser();
         String stringObject = objectVerify.string(idUser, idCart);
@@ -117,6 +120,7 @@ public class OrderPayController extends HttpServlet {
             isVerify = 0;
             System.out.println("Đặt hàng thất bại khóa không hợp lệ");
         }
+
         // xóa dữ liệu khỏi session
         billService.removeProductInCart(listIdRemove, request);
         response.sendRedirect(request.getContextPath()+"/order/reviewOrder?orderSuccess=1&isVerify="+isVerify);
