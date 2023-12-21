@@ -34,7 +34,7 @@ public class OrderDetailController extends HttpServlet {
         int idInt = Integer.parseInt(id);
         System.out.println("id find"+  idInt);
         CartModel cartModel = cartDao.getCartById(idInt);
-  // lay id
+        // lay id
         request.setAttribute("id", idInt);
         request.setAttribute("CUSTOMER", customerDAO.findById(cartModel.getIdUser())) ;
         request.setAttribute("cart", listDonHang(idInt));
