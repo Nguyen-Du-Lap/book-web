@@ -62,7 +62,59 @@ public class CartDao {
         }
         return 1;
     }
-    public int insertCart(int idUser, String timeShip, double feeShip, double totalPrice, String infoShip) {
+    /** lấy ngày tạo đơn hàng
+     *
+     */
+    public String getCreatime( int idCart,int idUser) {
+        String sql = "SELECT create_time FROM `carts` WHERE id = ? and idUser = ?";
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        String createTime = null;
+
+        try {
+            statement = connection.prepareStatement(sql);
+            statement.setInt(1, idCart);
+            statement.setInt(2, idUser);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                createTime = resultSet.getString("create_time");
+            }
+        } catch (SQLException e) {
+            // Handle exceptions
+            e.printStackTrace();
+        } finally {
+            // Close resultSet, statement, and connection to avoid resource leaks
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (statement != null) {
+                    statement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return createTime;
+    }
+
+    /**
+     *
+     * @param idUser
+     * @param timeShip
+     * @param feeShip
+     * @param totalPrice
+     * @param infoShip
+     * @return
+     */
+    public int insert_Cart(int idUser, String timeShip, double feeShip, double totalPrice, String infoShip) {
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet generatedKeys = null;
@@ -70,7 +122,7 @@ public class CartDao {
 
         if (connection != null) {
             try {
-                String sql = "INSERT INTO carts( idUser, timeShip, feeShip, totalPrice, infoShip) VALUES ( ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO carts( idUser, timeShip, feeShip, totalPrice, infoShip , create_time) VALUES ( ?, ?, ?, ?, ?,current_timestamp())";
                 statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, idUser);
                 statement.setString(2, timeShip);
@@ -85,6 +137,7 @@ public class CartDao {
                 if (generatedKeys.next()) {
                     cartId = generatedKeys.getInt(1); // Lấy giá trị ID đã được tạo tự động
                     System.out.println("CartModel inserted successfully. Cart ID: " + cartId);
+
                 } else {
                     System.err.println("Failed to retrieve auto-generated cart ID.");
                 }
@@ -102,6 +155,50 @@ public class CartDao {
         }
         return cartId;
     }
+
+    /**
+     * sau khi mua hang hoa don duoc tao và cap nhap thoi gian hoa don bill tạo
+     * @param id
+     */
+    public void update_cart_to_bill(int id) {
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+
+        if (connection != null) {
+            try {
+                // Lấy thời gian hiện tại trước khi cập nhật
+                long timeBeforeUpdate = System.currentTimeMillis();
+
+                String sql ="UPDATE bill SET create_order_time = CURRENT_TIMESTAMP WHERE idCart = ?";
+                statement = connection.prepareStatement(sql);
+                statement.setInt(1, id);
+
+                int rowsAffected = statement.executeUpdate();
+
+                // Lấy thời gian hiện tại sau khi cập nhật
+                long timeAfterUpdate = System.currentTimeMillis();
+
+                if (rowsAffected > 0) {
+                    System.out.println("CartModel update successfully.");
+                    System.out.println("Time before update: " + new Timestamp(timeBeforeUpdate));
+                    System.out.println("Time after update: " + new Timestamp(timeAfterUpdate));
+                } else {
+                    System.out.println("No rows updated. Check if the idCart value is correct and exists in the database.");
+                }
+            } catch (SQLException e) {
+                System.out.println("Update failed with error: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (statement != null) statement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public OrderReviewDetail getAllByIdUserAndIdCart(int id, int idCart) {
         OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
         String sql = "SELECT  CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, b.create_order_time, e.timeShip, e.totalPrice, b.shipping_info\n" +
@@ -126,6 +223,7 @@ public class CartDao {
                     orderReviewDetail.setTimeShip(resultSet.getString(7));
                     orderReviewDetail.setTotolPrice(resultSet.getInt(8));
                     orderReviewDetail.setTrangThai(resultSet.getInt(9));
+
                 }
 
                 return orderReviewDetail;
@@ -141,6 +239,101 @@ public class CartDao {
                 }
             }
         }
+        return null;
+
+    }
+
+    /**
+     *
+     * @param id
+     * @param idCart
+     * @return
+     */
+//    public OrderReviewDetail getAllByIdUserAndIdCartNoTimeship(int id, int idCart) {
+//        OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
+//        String sql = "SELECT  CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, b.create_order_time, e.timeShip, e.totalPrice\n" +
+//                " FROM bill b JOIN carts e ON b.idCart = e.id JOIN customer t ON e.idUser = t.id_user WHERE t.id_user = ? and b.idCart =?";
+//        Connection connection = JDBCConnector.getConnection();
+//        PreparedStatement statement = null;
+//        ResultSet resultSet = null;
+//        if(connection != null) {
+//            try {
+//                statement = connection.prepareStatement(sql);
+//                statement.setInt(1, id);
+//                statement.setInt(2, idCart);
+//                resultSet = statement.executeQuery();
+//                while (resultSet.next()) {
+//
+//                    orderReviewDetail.setFullName(resultSet.getString(1));
+//                    orderReviewDetail.setAddress(resultSet.getString(2));
+//                    orderReviewDetail.setPhone(resultSet.getString(3));
+//                    orderReviewDetail.setEmail(resultSet.getString(4));
+//                    orderReviewDetail.setIdcart(resultSet.getInt(5));
+//                    orderReviewDetail.setCreate_order_time(resultSet.getString(6));
+//                    orderReviewDetail.setTimeShip(resultSet.getString(7));
+//                    orderReviewDetail.setTotolPrice(resultSet.getInt(8));
+//
+//                }
+//
+//                return orderReviewDetail;
+//            } catch (SQLException e) {
+//                return null;
+//            } finally {
+//                try {
+//                    if(connection != null) connection.close();
+//                    if(statement != null) statement.close();
+//                    if(resultSet != null) resultSet.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return null;
+//
+//    }
+
+    /**
+     * khong lay thoi gian
+     * @param id
+     * @param idCart
+     * @return
+     */
+    public OrderReviewDetail getAllByIdUserAndIdCartNoTime(int id, int idCart) {
+        String sql = "SELECT CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, "
+                + "b.create_order_time, e.timeShip, e.totalPrice "
+                + "FROM bill b "
+                + "JOIN carts e ON b.idCart = e.id "
+                + "JOIN customer t ON e.idUser = t.id_user "
+                + "WHERE t.id_user = ? AND b.idCart = ?";
+
+        try (Connection connection = JDBCConnector.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, id);
+            statement.setInt(2, idCart);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    OrderReviewDetail orderReviewDetail = new OrderReviewDetail();
+                    orderReviewDetail.setFullName(resultSet.getString("fullname"));
+                    orderReviewDetail.setAddress(resultSet.getString("address"));
+                    orderReviewDetail.setPhone(resultSet.getString("phone"));
+                    orderReviewDetail.setEmail(resultSet.getString("email"));
+                    orderReviewDetail.setIdcart(resultSet.getInt("idCart"));
+                    orderReviewDetail.setTimeShip(resultSet.getString("timeShip"));
+                    orderReviewDetail.setTotolPrice(resultSet.getInt("totalPrice"));
+                    return orderReviewDetail;
+                } else {
+                    // Handle case when no data is found. For example:
+                    // throw new NoDataFoundException("No order found for the given ID and Cart ID.");
+                }
+            }
+        } catch (SQLException e) {
+            // Handle exception, log error, etc.
+            e.printStackTrace();
+            // You could log this error and/or throw a custom exception.
+        }
+        // You can return a default object or throw an exception if you prefer.
         return null;
 
     }
@@ -167,12 +360,12 @@ public class CartDao {
                 resultSet = statement.executeQuery();
                 while (resultSet.next()) {
                     CartDetailModel cartDetailModel = new CartDetailModel();
-                   cartDetailModel.setId(resultSet.getInt(1));
-                   cartDetailModel.setNameSach(resultSet.getString(2));
-                   cartDetailModel.setQuantity(resultSet.getInt(3));
-                   cartDetailModel.setImage(resultSet.getString(4));
-                   cartDetailModel.setTotalPrice(resultSet.getInt(5));
-                   result.add(cartDetailModel);
+                    cartDetailModel.setId(resultSet.getInt(1));
+                    cartDetailModel.setNameSach(resultSet.getString(2));
+                    cartDetailModel.setQuantity(resultSet.getInt(3));
+                    cartDetailModel.setImage(resultSet.getString(4));
+                    cartDetailModel.setTotalPrice(resultSet.getInt(5));
+                    result.add(cartDetailModel);
 
                 }
 
@@ -360,17 +553,14 @@ public class CartDao {
      * @param idUser
      * @return
      */
-    public String getPuclickey(int idCart ,int idUser){
-        String query = "SELECT DISTINCT `public_key`.public_Key , public_key.create_date\n" +
-                "\n" +
-                "FROM `customer`\n" +
-                "JOIN `public_key` ON customer.id_user = public_key.id_user\n" +
-                "JOIN carts ON customer.id_user = carts.idUser\n" +
-                "WHERE carts.id = ?" +
-                "  AND carts.idUser = ?" +
-                "  AND (public_key.expire IS NULL OR carts.create_time > public_key.expire)\n" +
-                "ORDER BY carts.create_time DESC\n" +
-                "LIMIT 1;";
+
+
+    /**
+     * lay public key  so sanh thoi gian cua hang vua voi public key
+     * @return
+     */
+    public String getPuclickey( int idUser,int idCart) {
+        String query = "CALL getSelectPublic_Key(?, ?)";
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -378,26 +568,26 @@ public class CartDao {
         if (connection != null) {
             try {
                 statement = connection.prepareStatement(query);
-                statement.setInt(1, idCart);
-                statement.setInt(2, idUser);
+                statement.setInt(1,idUser );
+                statement.setInt(2, idCart);
                 resultSet = statement.executeQuery();
 
                 if (resultSet.next()) {
                     return resultSet.getString(1);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();  // Handle or log the exception as needed
+                e.printStackTrace();
             } finally {
                 try {
                     if (resultSet != null) resultSet.close();
                     if (statement != null) statement.close();
                     if (connection != null) connection.close();
                 } catch (SQLException e) {
-                    e.printStackTrace();  // Handle or log the exception as needed
+                    e.printStackTrace();
                 }
             }
         }
-        return null;  // Return null if no result is found
+        return null;
     }
     public ArrayList<BookModel> bookHetHang() {
         String sql = "SELECT b.id_book, b.NAME, b.quantity, b.price,  ct.name\n" +
@@ -514,7 +704,7 @@ public class CartDao {
                 statement.setInt(1, idCart);
                 resultSet = statement.executeQuery();
                 while (resultSet.next()) {
-                   result = resultSet.getDouble(1);
+                    result = resultSet.getDouble(1);
                 }
 
                 return result;
@@ -600,10 +790,47 @@ public class CartDao {
             }
         }
     }
+    // cap nhap inforship bằng int
+    public int updateCartStatus(int id, int infoShip) {
+        Connection connection = JDBCConnector.getConnection();
+        PreparedStatement statement = null;
+        int rowsAffected = 0; // Biến để lưu số dòng bị ảnh hưởng bởi cập nhật
+
+        if (connection != null) {
+            try {
+                String sql = "UPDATE carts SET infoShip = ? WHERE id = ?";
+                statement = connection.prepareStatement(sql);
+
+                statement.setInt(1, infoShip);
+                statement.setInt(2, id);
+
+                rowsAffected = statement.executeUpdate();
+                System.out.println("CartModel update successfully. Rows affected: " + rowsAffected);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (connection != null) connection.close();
+                    if (statement != null) statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return rowsAffected; // Trả về số dòng bị ảnh hưởng bởi cập nhật
+    }
 
     public static void main(String[] args) {
         CartDao cartDao = new CartDao();
-        System.out.println( cartDao.getHash(32,49));
-        System.out.println( cartDao.getPuclickey(32,49));
+
+//        System.out.println(cartDao.getAllByIdUserAndIdCartNoTimeship(54,75));
+
+//        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
+        System.out.println(cartDao.getCreatime(30,48));
+
+        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
+
+
     }
 }

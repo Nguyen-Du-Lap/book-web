@@ -8039,6 +8039,9 @@ button.bg-dark:focus {
 .green{
   color: rgba(69, 116, 67, 0.87);
 }
+.red{
+  color: #ff0000;
+}
 .ml-4,
 .mx-4 {
   margin-left: 1.5rem !important;

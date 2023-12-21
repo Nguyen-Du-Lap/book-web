@@ -3,10 +3,16 @@ package vn.edu.hcmuaf.fit.utils;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import vn.edu.hcmuaf.fit.model.Bill;
 import vn.edu.hcmuaf.fit.model.CustomerModel;
 import vn.edu.hcmuaf.fit.model.EmailModel;
+import javax.activation.DataHandler;
 
-
+import javax.mail.internet.*;
+import java.util.List;
+import java.util.Properties;
+import javax.mail.util.ByteArrayDataSource;
+import javax.servlet.ServletOutputStream;
 import java.util.Properties;
 import java.util.Random;
 
@@ -91,10 +97,10 @@ public class EmailUtil {
     /**
      *
      * @param toEmail
-     * @param order
+     * @param
      * @return
      */
-    public boolean sendEmailOrder( String toEmail, String order) {
+    public boolean sendEmailOrder( String toEmail,CustomerModel customerModel, Bill bill, List<Bill> listBill) {
         boolean test = false;
 
         String fromEmail = "lapnguyen37651@gmail.com";
@@ -123,9 +129,10 @@ public class EmailUtil {
 
             //set email subject
             mess.setSubject("User Email Verification");
-
+            String html =toStringHtml(customerModel,bill, listBill);
+            mess.setContent(html, "text/html; charset=utf-8");
             //set message text
-            mess.setText("Notification about orders: "+"\n"+ "Your order has been canceled due to incorrect information with the original information" + "\n" + order +"\n" +"from : " +fromEmail);
+           // mess.setText("Notification about orders: "+"\n"+ "Your order has been canceled due to incorrect information with the original information" + "\n"+"Information at :" + billOrder+"\n" +"from : " +fromEmail);
             //send the message
             Transport.send(mess);
             test=true;
@@ -136,6 +143,114 @@ public class EmailUtil {
 
         return test;
     }
+
+    public String toStringHtml(CustomerModel customerModel, Bill bill, List<Bill> listBill){
+        String htmlCode = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <title>Đơn hàng</title>\n" +
+                "    <style>\n" +
+                "        body {\n" +
+                "            font-family: Arial, sans-serif;\n" +
+                "            margin: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        h1 {\n" +
+                "            margin-bottom: 10px;\n" +
+                "        }\n" +
+                "\n" +
+                "        table {\n" +
+                "            width: 100%;\n" +
+                "            border-collapse: collapse;\n" +
+                "            margin-bottom: 20px;\n" +
+                "        }\n" +
+                "\n" +
+                "        th, td {\n" +
+                "            border: 1px solid #ccc;\n" +
+                "            padding: 8px;\n" +
+                "            text-align: center; /* Canh giữa dữ liệu */\n" +
+                "        }\n" +
+                "\n" +
+                "        th {\n" +
+                "            background-color: #f2f2f2;\n" +
+                "            font-weight: bold;\n" +
+                "        }\n" +
+                "\n" +
+                "        tr:nth-child(even) {\n" +
+                "            background-color: #f9f9f9;\n" +
+                "        }\n" +
+                "\n" +
+                "        tr:hover {\n" +
+                "            background-color: #e6e6e6;\n" +
+                "        }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <h6>Chúng tôi nhận thấy thông tin đơn hàng bị sai thông tin do đó đơn hàng đã bị huỷ .Thông tin :</h6>\n" +
+                "    <h2>Thông tin khách hàng</h2>\n" +
+                "    <table>\n" +
+                "        <tr>\n" +
+                "            <th>Tên khách hàng</th>\n" +
+                "            <th>Địa chỉ</th>\n" +
+                "            <th>Số điện thoại</th>\n" +
+                "            <th>Email</th>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <td>"+customerModel.getFirstName()+" "+customerModel.getLastName()+"</td>\n" +
+                "            <td>"+customerModel.getAddress()+"</td>\n" +
+                "            <td>"+customerModel.getPhone()+"</td>\n" +
+                "            <td>"+customerModel.getEmail()+"</td>\n" +
+                "        </tr>\n" +
+                "        <!-- Thêm các hàng khách hàng khác vào đây -->\n" +
+                "    </table>\n" +
+                "\n" +
+                "    <h2>Thông tin người giao</h2>\n" +
+                "    <table>\n" +
+                "        <tr>\n" +
+                "            <th>Tên người giao</th>\n" +
+                "            <th>Số điện thoại</th>\n" +
+                "            <th>Tên công ty</th>\n" +
+                "            <th>Địa chỉ</th>\n" +
+                "        </tr>\n" +
+                "        <tr>\n" +
+                "            <td>Nguyễn Dư Lập</td>\n" +
+                "            <td>0867415853</td>\n" +
+                "            <td>Doraemon</td>\n" +
+                "            <td>Đại Học Nông Lâm tp.HCM</td>\n" +
+                "        </tr>\n" +
+                "        <!-- Thêm các hàng người giao khác vào đây -->\n" +
+                "    </table>\n" +
+                "\n" +
+                "    <h2>Thông tin đơn hàng</h2>\n" +
+                "    <table>\n" +
+                "        <tr>\n" +
+                "            <th>Mã sản phẩm</th>\n" +
+                "            <th>Số lượng</th>\n" +
+                "            <th>Tên sản phẩm</th>\n" +
+                "            <th>Ghi chú</th>\n" +
+                "        </tr>\n";
+        for(Bill b: listBill) {
+            int idOder = b.getIdOrder();
+            int quantity = b.getQuantity();
+            String nameProduct = b.getName();
+            String information = b.getInfo() != null ? b.getInfo() : "";
+
+            htmlCode += "<tr>\n" +
+                    "<td>"+idOder+"</td>\n" +
+                    "<td>"+quantity+"</td>\n" +
+                    "<td>"+nameProduct+"</td>\n" +
+                    "<td>"+information+"</td>\n" +
+                    "</tr>\n";
+        }
+
+        htmlCode += "<!-- Thêm các hàng đơn hàng khác vào đây -->\n"+
+                "    </table>\n" +
+                "<h2>Tổng tiền: "+ PriceFormatUtil.formatPrice(bill.getTotalPrice())+"</h2>\n" +
+                "</body>\n" +
+                "</html>\n";
+        return htmlCode;
+    }
+
     public boolean sendNewEmail( String toEmail, String private_key) {
         boolean test = false;
 

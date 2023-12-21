@@ -10,9 +10,24 @@ public class ObjectVerifyUtil {
     CartDao cartDao = new CartDao();
 
     public String string(int idUser, int idCart) {
-        String s1 = String.valueOf(cartDao.getAllByIdUserAndIdCart(idUser, idCart));
+ dev_thuan
+        OrderReviewDetail o1 = cartDao.getAllByIdUserAndIdCart(idUser, idCart);
+        String getTime = cartDao.getCreatime(idCart, idUser);
+        System.out.println(getTime);
+
+        OrderReviewDetail o1 = cartDao.getAllByIdUserAndIdCartNoTime(idUser, idCart);
+
+
+        String s1 = String.valueOf(o1);
+        System.out.println( "s1"+s1);
+
         String s2 = String.valueOf(cartDao.getAllDetailCart(idUser, idCart));
+        System.out.println("s2"+s2);
+        return s1 + s2 +getTime;
+
+
         return s1 + s2;
+ master
     }
 
     public String stringPrinlt(int idUser, int idCart) {
@@ -21,10 +36,10 @@ public class ObjectVerifyUtil {
         StringBuilder result = new StringBuilder();
         for (CartDetailModel value : list) {
             result.append("Tên khách hàng :").append(o.getFullName() +"- ").append("Địa chỉ :").append(o.getAddress()  +"- ").append("Số điện thoại:").append(o.getPhone()+"- ").append("Email :").append(o.getEmail()  +"- "
-            ).append("Mã sản phẩm:").append(o.getIdcart() +"- ").append(" Tổng tiền :").append(o.getTotolPrice()  +"- ").append("Ngày đặt :").append(o.getCreate_order_time() +"\n" ).append("Tên sản phẩm :").append(value.getNameSach() +"- ")
-            .append("Số lượng:").append(value.getQuantity());
+                    ).append("Mã sản phẩm:").append(o.getIdcart() +"- ").append(" Tổng tiền :").append(o.getTotolPrice()  +"- ").append("Ngày đặt :").append(o.getCreate_order_time() +"\n" ).append("Tên sản phẩm :").append(value.getNameSach() +"- ")
+                    .append("Số lượng:").append(value.getQuantity());
         }
-return  result.toString();
+        return  result.toString();
 
     }
 

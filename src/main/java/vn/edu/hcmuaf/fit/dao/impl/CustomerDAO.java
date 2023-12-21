@@ -156,8 +156,8 @@ CustomerDAO implements ICustomerDAO {
     }
     public void update_publicKey(int id) {
         String sql = new String("UPDATE public_key\n" +
-                "SET `status` = 0, `expire` = CURRENT_DATE\n" +
-                "WHERE id_user = ?");
+                "SET `status` = 0, `expire` = NOW()\n" +
+                "WHERE id_user = ? AND expire IS NULL ");
         PreparedStatement statement = null;
         try {
             Connection connection = JDBCConnector.getConnection();

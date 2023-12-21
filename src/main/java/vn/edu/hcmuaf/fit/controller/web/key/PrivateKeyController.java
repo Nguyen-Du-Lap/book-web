@@ -39,7 +39,7 @@ public class PrivateKeyController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String privateKey = request.getParameter("privateKey");
+        String privateKey = request.getParameter("privateKey").trim();
         RSAUtil rsa = new RSAUtil();
         try {
             rsa.setPrivateKey(privateKey);
@@ -47,6 +47,7 @@ public class PrivateKeyController extends HttpServlet {
             request.getSession().setAttribute("PRIVATE_KEY", privateKey);
             response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
         } catch (Exception e) {
+            request.getSession().setAttribute("PRIVATE_KEY", privateKey);
             response.sendRedirect(request.getContextPath()+"/orderAddVoucher?list_id="+listId);
 //            new MessageParameterUntil("Private key không hợp lệ!", "danger", "/views/web/cart.jsp", request, response).send();
         }
