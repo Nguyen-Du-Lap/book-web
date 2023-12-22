@@ -294,10 +294,38 @@ public class CartDao {
 
     /**
      * khong lay thoi gian
-     * @param id
+     * @param id_user
      * @param idCart
      * @return
      */
+    public double getTotalBill(int id_user, int idCart){
+        String sql = "SELECT b.totalBill\n" +
+                "FROM bill b\n" +
+                "WHERE b.id_user = ? and b.idCart = ? ";
+
+
+        try (Connection connection = JDBCConnector.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setInt(1, id_user);
+            statement.setInt(2, idCart);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("totalBill");
+                } else {
+                    // Handle case when no data is found. For example:
+                    // throw new NoDataFoundException("No order found for the given ID and Cart ID.");
+                }
+            }
+        } catch (SQLException e) {
+            // Handle exception, log error, etc.
+            e.printStackTrace();
+            // You could log this error and/or throw a custom exception.
+        }
+        // You can return a default object or throw an exception if you prefer.
+        return 0;
+    }
     public OrderReviewDetail getAllByIdUserAndIdCartNoTime(int id, int idCart) {
         String sql = "SELECT CONCAT(t.first_name, ' ', t.last_name) AS fullname, b.address, b.phone, t.email, b.idCart, "
                 + "b.create_order_time, e.timeShip, e.totalPrice "
@@ -560,7 +588,7 @@ public class CartDao {
      * @return
      */
     public String getPuclickey( int idUser,int idCart) {
-        String query = "CALL getSelectPublic_Key(?, ?)";
+        String query = "CALL getSelectPublicKey(?, ?)";
         Connection connection = JDBCConnector.getConnection();
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -827,10 +855,10 @@ public class CartDao {
 //        System.out.println(cartDao.getAllByIdUserAndIdCartNoTimeship(54,75));
 
 //        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
-        System.out.println(cartDao.getCreatime(30,48));
-
-        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
-
+//        System.out.println(cartDao.getCreatime(30,48));
+//
+//        System.out.println(cartDao.getAllByIdUserAndIdCartNoTime(54,75));
+        System.out.println(cartDao.getTotalBill(48,31));
 
     }
 }

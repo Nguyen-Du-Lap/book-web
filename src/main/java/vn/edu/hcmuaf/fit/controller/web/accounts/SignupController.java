@@ -13,6 +13,8 @@ import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @WebServlet(name = "signup", value = "/signup")
 public class SignupController extends HttpServlet {
@@ -67,6 +69,7 @@ public class SignupController extends HttpServlet {
         String lname = request.getParameter("lname");
         String phone = request.getParameter("phoneNumber");
         String address = request.getParameter("address");
+        ExecutorService executorService = Executors.newFixedThreadPool(10); // Số luồng tối đa
         create_key();
         //String idUser = request.getParameter("id_user");
         if (!email.equals("") && !pass.equals("") && !re_pass.equals("") && !fname.equals("") && !lname.equals("")) {
@@ -79,7 +82,10 @@ public class SignupController extends HttpServlet {
                     EmailUtil sm = new EmailUtil();
                     String code = sm.getRandom();
                     CustomerModel user = new CustomerModel(email, pass, fname, lname, phone, address, code, System.currentTimeMillis() / 1000 / 60);
-                    sm.sendEmail(user);
+                    executorService.submit(() -> {
+                        // Gửi email ở đây
+                        sm.sendEmail(user);
+                    });
                     HttpSession session = request.getSession();
                     session.setAttribute("registerUser", user);
                     session.setAttribute("public_key", publicKeyStr);

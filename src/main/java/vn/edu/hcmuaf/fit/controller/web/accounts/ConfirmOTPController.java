@@ -11,6 +11,8 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @WebServlet(name = "confirmOTP", value = "/confirmOTP")
 public class ConfirmOTPController extends HttpServlet {
@@ -31,14 +33,17 @@ public class ConfirmOTPController extends HttpServlet {
         String public_key = (String) session.getAttribute("public_key");
         String private_key = (String) session.getAttribute("private_key");
         String toEmail = (String) session.getAttribute("toEmail");
-
+        ExecutorService executorService = Executors.newFixedThreadPool(10); // Số luồng tối đa
         CustomerDAO dao = new CustomerDAO();
         //String idUser = request.getParameter("id_user");
         if(code.equals(user.getCode()) && (System.currentTimeMillis() / 1000/60) - user.getTime_active_code() <= 5){
             dao.signup(user.getEmail(), MD5Utils.encrypt( user.getPassword()), user.getFirstName(),user.getLastName(), user.getPhone(), user.getAddress());
             dao.insert_publicKey(dao.take_id(), public_key);
             EmailUtil sm = new EmailUtil();
-            sm.sendEmail(toEmail, private_key);
+            executorService.submit(() -> {
+                // Gửi email ở đây
+                sm.sendEmail(toEmail, private_key);
+            });
 
             session.removeAttribute("registerUser");
             request.getRequestDispatcher("/views/login.jsp").forward(request,response );
