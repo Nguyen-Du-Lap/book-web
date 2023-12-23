@@ -1,12 +1,12 @@
 package vn.edu.hcmuaf.fit.controller.web.accounts;
 
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import vn.edu.hcmuaf.fit.dao.impl.CustomerDAO;
 import vn.edu.hcmuaf.fit.db.MessageProperties;
 import vn.edu.hcmuaf.fit.model.CustomerModel;
-import vn.edu.hcmuaf.fit.model.EmailModel;
 import vn.edu.hcmuaf.fit.utils.EmailUtil;
-import javax.mail.Authenticator;
-import javax.mail.Session;
+import jakarta.mail.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,11 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
-import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
 @WebServlet(name = "forgotPassword", value = "/forgotPassword")
