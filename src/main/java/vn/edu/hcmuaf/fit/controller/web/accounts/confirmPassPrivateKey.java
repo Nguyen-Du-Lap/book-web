@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -53,7 +54,7 @@ public class confirmPassPrivateKey extends HttpServlet {
         request.getRequestDispatcher("/views/web/account.jsp").forward(request, response);
     }
 
-
+    // luu private key ve may tinh
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html; charset=UTF-8");
@@ -70,8 +71,14 @@ public class confirmPassPrivateKey extends HttpServlet {
         if(password.substring(3).equals(PASSWORD_USER.substring(3))){
             dao.update_publicKey(id_user);
             dao.insert_publicKey(id_user,publicKeyStr);
-            email.sendNewEmail(toMail, privateKeyStr);
-            request.setAttribute("message", "Đã gửi private key mới về email của bạn");
+
+            // luu private key ve may
+            PrintWriter pw = new PrintWriter("C:\\Users\\ADMIN\\Downloads\\new_privateKey.txt", "UTF-8");
+            pw.println(privateKeyStr);
+            pw.flush();
+            pw.close();
+
+            request.setAttribute("message", "Đã lưu private key mới về máy của bạn");
             request.setAttribute("alert", "success");
             request.getRequestDispatcher("/views/web/confirmPassPrivateKey.jsp").forward(request,response );
         }else{
@@ -80,6 +87,34 @@ public class confirmPassPrivateKey extends HttpServlet {
             request.getRequestDispatcher("/views/web/confirmPassPrivateKey.jsp").forward(request, response);
         }
     }
+
+    // gui ve email
+//    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+//            throws ServletException, IOException {
+//        response.setContentType("text/html; charset=UTF-8");
+//        InetAddress myIP=InetAddress.getLocalHost();
+//        String ip= myIP.getHostAddress();
+//        CustomerDAO dao = new CustomerDAO();
+//        EmailUtil email = new EmailUtil();
+//        create_key();
+//        String password = MD5Utils.encrypt(request.getParameter("password"));
+//        String PASSWORD_USER = (String) SessionUtil.getInstance().getValue(request, "PASSWORD_USER");
+//        String toMail = (String) SessionUtil.getInstance().getValue(request, "MAIL");
+//        int id_user = (int) SessionUtil.getInstance().getValue(request, "ID_USER");
+//
+//        if(password.substring(3).equals(PASSWORD_USER.substring(3))){
+//            dao.update_publicKey(id_user);
+//            dao.insert_publicKey(id_user,publicKeyStr);
+//            email.sendNewEmail(toMail, privateKeyStr);
+//            request.setAttribute("message", "Đã gửi private key mới về email của bạn");
+//            request.setAttribute("alert", "success");
+//            request.getRequestDispatcher("/views/web/confirmPassPrivateKey.jsp").forward(request,response );
+//        }else{
+//            request.setAttribute("message", "Mật khẩu không chính xác");
+//            request.setAttribute("alert", "danger");
+//            request.getRequestDispatcher("/views/web/confirmPassPrivateKey.jsp").forward(request, response);
+//        }
+//    }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request,response);
