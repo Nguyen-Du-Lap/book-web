@@ -6,13 +6,7 @@ import jakarta.mail.internet.MimeMessage;
 import vn.edu.hcmuaf.fit.model.Bill;
 import vn.edu.hcmuaf.fit.model.CustomerModel;
 import vn.edu.hcmuaf.fit.model.EmailModel;
-import javax.activation.DataHandler;
-
-import javax.mail.internet.*;
 import java.util.List;
-import java.util.Properties;
-import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.ServletOutputStream;
 import java.util.Properties;
 import java.util.Random;
 

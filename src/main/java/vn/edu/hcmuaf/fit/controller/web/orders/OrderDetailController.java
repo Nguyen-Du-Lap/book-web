@@ -7,19 +7,11 @@ import vn.edu.hcmuaf.fit.dao.impl.CustomerDAO;
 import vn.edu.hcmuaf.fit.model.*;
 import vn.edu.hcmuaf.fit.utils.*;
 
-import javax.mail.util.ByteArrayDataSource;
+import jakarta.mail.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.util.Properties;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.*;
-import javax.mail.internet.*;
 import java.util.List;
 
 @WebServlet(name = "orderDetail", value = "/orderDetail")
